@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Какая нейросеть под задачу — находки Alexandrov Studio</title>
-<meta name="description" content="94 нейросети по задачам: картинки, видео, озвучка, карточки маркетплейсов, агенты. Подбор за 3 вопроса, готовые связки и честные лимиты бесплатных тарифов. Находки Alexandrov Studio." />
+<meta name="description" content="94 нейросети по задачам, разборы топ-моделей с приёмами и параметрами, 17 готовых связок и честные лимиты бесплатных тарифов. Находки Alexandrov Studio." />
 <meta name="theme-color" content="#F6F2EA" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#191512" media="(prefers-color-scheme: dark)" />
 <link rel="canonical" href="https://alexandrov41.github.io/nahodki/" />
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Alexandrov AI Studio" />
 <meta property="og:title" content="Какая нейросеть под твою задачу?" />
-<meta property="og:description" content="94 находки по задачам, подбор за 3 вопроса и готовые связки. Без воды — то, чем пользуюсь сам." />
+<meta property="og:description" content="Разборы топ-моделей, приёмы промптинга и 94 находки по задачам. Без воды — то, чем пользуюсь сам." />
 <meta property="og:url" content="https://alexandrov41.github.io/nahodki/" />
 <meta property="og:image" content="https://alexandrov41.github.io/nahodki/art/hero.jpg" />
 <meta property="og:image:width" content="1200" />
@@ -21,7 +21,7 @@
 <meta property="og:locale" content="ru_RU" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Какая нейросеть под твою задачу?" />
-<meta name="twitter:description" content="94 находки по задачам, подбор за 3 вопроса и готовые связки." />
+<meta name="twitter:description" content="Разборы топ-моделей, приёмы промптинга и 94 находки по задачам." />
 <meta name="twitter:image" content="https://alexandrov41.github.io/nahodki/art/hero.jpg" />
 
 <script type="application/ld+json">
@@ -1423,6 +1423,220 @@
   .limit-line svg{width:15px;height:15px;flex:none;margin-top:2px;color:var(--amber-deep);}
   .limit-line b{color:var(--ink);font-weight:600;}
 
+  /* ---------- топ-модели ---------- */
+  .top-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+  }
+  .top-card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    text-align:left;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    overflow:hidden;
+    cursor:pointer;
+    font-family:'Onest',sans-serif;
+    color:var(--ink);
+    padding:0;
+    transition:border-color .22s ease,transform .22s ease,box-shadow .22s ease;
+  }
+  .top-card:hover{border-color:var(--amber);transform:translateY(-3px);box-shadow:var(--shadow);}
+  .top-card:focus-visible{outline:2px solid var(--amber);outline-offset:3px;}
+  .top-art{
+    display:block;
+    width:100%;
+    height:92px;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+    background:var(--paper);
+  }
+  .top-art picture{display:block;width:100%;height:100%;}
+  .top-art img{width:100%;height:100%;object-fit:cover;display:block;}
+  html[data-theme="dark"] .top-art img{filter:brightness(.78) saturate(.9);}
+  .top-body{display:flex;flex-direction:column;padding:16px 18px 18px;flex:1;}
+  .top-head{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+  .top-card h3{
+    font-family:'Onest',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    margin:0;
+    letter-spacing:-.01em;
+  }
+  .tier{
+    font-family:'Prata',serif;
+    font-size:12px;
+    width:24px;height:24px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    border:1px solid var(--amber);
+    color:var(--amber-deep);
+    flex:none;
+  }
+  .tier.s{background:var(--amber);color:var(--cta-fg);border-color:var(--amber);}
+  .top-card p{
+    margin:0 0 12px;
+    font-size:15px;
+    line-height:1.5;
+    color:var(--ink-soft);
+  }
+  .top-card .n{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    margin-top:auto;
+  }
+
+  /* ветки внутри профиля */
+  .branch{
+    border-top:1px solid var(--line);
+    padding:20px 0 0;
+    margin-top:20px;
+  }
+  .branch:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+  .branch-h{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 12px;
+  }
+  .branch-h .ico{
+    width:28px;height:28px;
+    border:1px solid var(--amber);
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--amber-deep);
+    flex:none;
+  }
+  .branch-h .ico svg{width:14px;height:14px;}
+  .branch-h h4{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0;
+    font-weight:400;
+  }
+  .branch p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-soft);}
+  .branch p b{color:var(--ink);font-weight:600;}
+  .branch ul{list-style:none;padding:0;margin:0;}
+  .branch ul li{
+    position:relative;
+    padding-left:20px;
+    margin-bottom:11px;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--ink-soft);
+  }
+  .branch ul li:last-child{margin-bottom:0;}
+  .branch ul li:before{
+    content:'';
+    position:absolute;
+    left:3px;top:9px;
+    width:5px;height:5px;
+    border-radius:50%;
+    background:var(--amber);
+  }
+  .branch ul li b{color:var(--ink);font-weight:600;}
+  .branch.warn ul li:before{background:var(--wine);}
+  .link-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .link-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    min-height:44px;
+    background:var(--paper);
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    padding:9px 15px;
+    color:var(--ink);
+    font-family:'Onest',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    transition:border-color .18s ease,color .18s ease,transform .18s ease;
+  }
+  .link-chip:hover{border-color:var(--amber);color:var(--amber-deep);transform:translateY(-1px);}
+  .link-chip:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .link-chip svg{width:13px;height:13px;opacity:.6;}
+
+  /* ---------- приёмы ---------- */
+  .skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .skill-card{
+    text-align:left;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+    cursor:pointer;
+    font-family:'Onest',sans-serif;
+    color:var(--ink);
+    transition:border-color .22s ease,transform .22s ease,box-shadow .22s ease;
+  }
+  .skill-card:hover{border-color:var(--amber);transform:translateY(-2px);box-shadow:var(--shadow);}
+  .skill-card:focus-visible{outline:2px solid var(--amber);outline-offset:3px;}
+  .skill-card .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    margin-bottom:11px;
+  }
+  .skill-card h3{
+    font-family:'Onest',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    margin:0 0 7px;
+    letter-spacing:-.01em;
+  }
+  .skill-card p{margin:0;font-size:15px;line-height:1.5;color:var(--ink-soft);}
+
+  .step-list{list-style:none;padding:0;margin:0;counter-reset:s;}
+  .step-list li{
+    position:relative;
+    counter-increment:s;
+    padding-left:38px;
+    margin-bottom:14px;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--ink-soft);
+  }
+  .step-list li:last-child{margin-bottom:0;}
+  .step-list li:before{
+    content:counter(s);
+    position:absolute;
+    left:0;top:-2px;
+    width:26px;height:26px;
+    border:1px solid var(--amber);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Prata',serif;
+    font-size:12px;
+    color:var(--amber-deep);
+  }
+
+  @media (max-width:900px){
+    .top-grid,.skill-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:680px){
+    .top-art{height:78px;}
+    .top-body{padding:14px 16px 16px;}
+    .skill-card{padding:18px;}
+  }
+
   /* ---------- лента «Что изменилось» ---------- */
   .news-list{list-style:none;padding:0;margin:0;}
   .news-item{
@@ -1815,6 +2029,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h7M4 12h16M4 17h11"/><circle cx="17" cy="7" r="2"/><circle cx="19" cy="17" r="2"/></svg>
         Связки
       </button>
+      <button class="nav-link" type="button" data-go="top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg>
+        Топ-модели
+      </button>
+      <button class="nav-link" type="button" data-go="skills">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.2 1 6.3L12 16.8 6.5 19.5l1-6.3L3 9l6-1z"/></svg>
+        Приёмы
+      </button>
       <button class="nav-link" type="button" data-go="catalog">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         Каталог
@@ -1852,6 +2074,8 @@
       <div class="stat"><b id="statCats">0</b><span>категорий</span></div>
       <div class="stat"><b id="statFree">0</b><span>без VPN и карты</span></div>
       <div class="stat"><b id="statRec">0</b><span>готовых связок</span></div>
+      <div class="stat"><b id="statTop">0</b><span>разборов моделей</span></div>
+      <div class="stat"><b id="statSkill">0</b><span>приёмов</span></div>
     </div>
   </section>
 
@@ -1880,11 +2104,24 @@
     <button class="all-link" type="button" data-go="recipes"id="allRecLink">Все связки →</button>
   </section>
 
+  <section class="tiles-sec" aria-labelledby="topPrevTitle">
+    <div class="results-head">
+      <h2 id="topPrevTitle">Топ-модели</h2>
+      <span class="count">приёмы и грабли</span>
+    </div>
+    <div class="top-grid" id="topPreview"></div>
+    <button class="all-link" type="button" data-go="top" id="allTopLink">Все модели →</button>
+  </section>
+
   <section class="tiles-sec">
     <div class="entries">
       <button class="entry" type="button" data-go="catalog">
         <span class="entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
         <span><h3>Весь каталог</h3><p>Поиск по названию и задаче, фильтр «работает без VPN»</p></span>
+      </button>
+      <button class="entry" type="button" data-go="skills">
+        <span class="entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.2 1 6.3L12 16.8 6.5 19.5l1-6.3L3 9l6-1z"/></svg></span>
+        <span><h3>Приёмы</h3><p>Навыки, которые работают с любой моделью</p></span>
       </button>
       <button class="entry" type="button" data-go="news">
         <span class="entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h7M8 13h7M8 17h4"/></svg></span>
@@ -1975,6 +2212,30 @@
     <div class="grid" id="savedGrid"></div>
     </section>
     <div class="empty-note" id="savedEmpty">Пока пусто. Жми <b>закладку</b> на любой карточке — находка окажется здесь и переживёт закрытие вкладки.</div>
+  </section>
+
+  <section class="view" id="view-top" aria-labelledby="topTitle">
+    <div class="view-head">
+      <button class="back-btn" type="button" data-back>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        На главную
+      </button>
+    </div>
+    <h2 class="view-title" id="topTitle">Топ-модели</h2>
+    <p class="view-lead">Разбор ключевых моделей: <b>за что берут, какие параметры решают, где обожжёшься</b> и с чем связать. Не описание, а рабочая шпаргалка.</p>
+    <div class="top-grid" id="topGrid"></div>
+  </section>
+
+  <section class="view" id="view-skills" aria-labelledby="skillsTitle">
+    <div class="view-head">
+      <button class="back-btn" type="button" data-back>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        На главную
+      </button>
+    </div>
+    <h2 class="view-title" id="skillsTitle">Приёмы</h2>
+    <p class="view-lead">Навыки, которые работают с <b>любой моделью</b>. Освоил один раз — экономишь время везде.</p>
+    <div class="skill-grid" id="skillGrid"></div>
   </section>
 
   <section class="view" id="view-news" aria-labelledby="newsTitle">
@@ -2985,7 +3246,200 @@
 
   // ── Что изменилось: лента коротких заметок ──────────────────────────
   // Повод вернуться. Свежее сверху; дата — когда проверял.
+  // ── Топ-модели: профили с ответвлениями ─────────────────────────────
+  // Для каждой ключевой модели: сила, приёмы, грабли, связи, промпт.
+  const TOP_MODELS = [
+    {id:'nano', name:'Nano Banana Pro', tier:'S', cat:'art', art:'plate-visual',
+     lead:'Рабочая лошадка по картинкам. Рисует в 4K и правит готовое фото обычными словами.',
+     power:'Держит лицо персонажа между генерациями и правит кадр точечно, не разваливая остальное. Единственная из топовых, кто <b>сверяется с реальностью через поиск</b> перед генерацией: попросишь машину конкретной модели — сначала посмотрит, как она выглядит.',
+     tricks:[
+       'Принимает <b>до 14 референсов разом</b>. Пять кадров одного лица — и персонаж не «плывёт» между сценами.',
+       'Сила привязки к референсу: <b>0.5–0.7</b> — мягкий намёк на внешность, <b>0.88–0.92</b> — лицо сохраняется точно. Начинай с 0.90.',
+       'Зафиксируй <b>seed</b>, если правишь промпт по мелочи — композиция не «дрогнет».',
+       'Эталонный кадр делай фронтально, лицо на 40–50% площади — дальше он работает опорой для всей серии.'],
+     traps:[
+       'На бесплатном тарифе <b>3 картинки в день</b> в приложении Gemini.',
+       'Художественная выразительность слабее, чем у Midjourney: это <b>производственный станок, а не кисть</b>.'],
+     links:['art:Midjourney','banner:GPT Image 2','edit:Flux Kontext'],
+     prompt:'Фото: [что в кадре].\nСохрани лицо с референса без изменений.\nСвет: [мягкий рассеянный], ракурс [три четверти].\nФон: [описание]. Формат 4:5, 4K.\nНе менять: черты лица, пропорции.'},
+
+    {id:'mj', name:'Midjourney', tier:'S', cat:'art', art:'plate-visual',
+     lead:'Эталон вкуса. Когда важна не точность, а как кадр ощущается.',
+     power:'Цвет, свет и композиция на уровне, которого не даёт никто. Берут для обложек, концепт-арта и всего, где картинка сама по себе — высказывание.',
+     tricks:[
+       '<b>--sref [ссылка]</b> переносит не палитру, а <i>характер</i> изображения: работу с тенями, плотность линий, настроение. Дай кадр из любимого фильма — получишь его атмосферу со своим сюжетом.',
+       '<b>--cref [ссылка]</b> держит одного героя в разных сценах. <b>--cw 100</b> — максимальное сходство, <b>--cw 0</b> — только лицо без одежды и причёски.',
+       '<b>--style raw</b> убирает фирменную «красивость», когда нужна документальность.',
+       '<b>--no [объект]</b> — негативный промпт. <b>--chaos 20</b> добавляет разброс вариантов.',
+       'Оба параметра сочетаются: <b>--sref одно --cref другое</b> — свой герой в чужой эстетике.'],
+     traps:[
+       '<b>Бесплатного тарифа нет с 2023 года.</b> Всё, что обещает «Midjourney бесплатно», — агрегаторы.',
+       'Текст на картинке пишет плохо — под баннеры бери другую модель.',
+       'Публичного API нет. Для автоматизации не подойдёт.',
+       '<b>--cref</b> заточен под сгенерированных персонажей, реальные лица искажает.'],
+     links:['banner:Recraft','art:Nano Banana Pro','video:Kling'],
+     prompt:'[Что в кадре], [настроение], [свет].\n--ar 3:2 --style raw --q 2\n--sref [ссылка на референс стиля]\n--no text, watermark, frame'},
+
+    {id:'veo', name:'Veo 3', tier:'S', cat:'video', art:'plate-video',
+     lead:'Кинематографичное видео со звуком прямо в кадре.',
+     power:'Генерирует видео вместе с синхронной звуковой дорожкой — шумы, диалоги с попаданием в губы, музыка. Экономит целый этап озвучки. Точно воспроизводит логотипы известных брендов.',
+     tricks:[
+       'Структура, которая работает: <b>план + герой + действие + стиль + движение камеры + звук</b>.',
+       '<b>Первые слова весят больше</b> — главное ставь в начало.',
+       'Реплики пиши <b>через двоеточие и без кавычек</b>: <i>Мужчина говорит: Меня зовут Бен</i>. С кавычками модель дорисует субтитры с ошибками.',
+       'Одно действие на промпт. Два события в восьми секундах — гарантированный хаос.',
+       'Для серии с одним героем: сделай эталонный кадр, потом <b>image-to-video</b> в каждом клипе — лицо не поплывёт.',
+       'Умеет таймлайн: <i>0:00–0:05 эмбиент, 0:05–0:10 добавляется барабан</i>.'],
+     traps:[
+       'Клип <b>около 8 секунд</b> за проход, дальше — продление.',
+       'Русский текст в кадре превращается в кашу.',
+       'Повторять слово ради акцента бесполезно — только шум.'],
+     links:['video:Kling','avatar:HeyGen','sound:ElevenLabs'],
+     prompt:'Средний план, [герой] [одно действие], [стиль].\nКамера: [медленный наезд].\nСвет: [золотой час].\nЗвук: [что слышно в кадре].\n8 секунд, 16:9.'},
+
+    {id:'kling', name:'Kling', tier:'A', cat:'video', art:'plate-video',
+     lead:'Лучшее соотношение цены и качества в видео. Работает из России.',
+     power:'Длинные клипы, стабильная анимация и честный липсинк на несколько персонажей. Оживляет фото так, что портрет начинает дышать.',
+     tricks:[
+       'Лучший вход — <b>image-to-video</b>: картинка даёт модели опору, текстовая генерация капризнее.',
+       'Пять слоёв промпта: <b>герой → действие → место → камера → свет</b>. Три-шесть предложений, не абзац.',
+       'Обязательно добавляй запреты: <i>то же лицо, без лишних людей, без мультяшности</i>.',
+       'Motion Control — рисуешь траекторию камеры на таймлайне.'],
+     traps:[
+       'Детализация «герой лет тридцати пяти в тёмно-зелёной парке» работает лучше, чем «человек».',
+       'Бесплатно — <b>66 генераций в месяц</b>.'],
+     links:['anim:Kling','video:Veo 3','video:Hailuo'],
+     prompt:'Реалистичное видео: [герой с деталями] [одно действие].\nКамера: [из среднего плана в крупный].\nСвет: [естественный тёплый].\nСохранить: то же лицо, возраст, одежду.\nБез: лишних людей, мультяшности.'},
+
+    {id:'claude', name:'Claude', tier:'S', cat:'text', art:'plate-text',
+     lead:'Длинные тексты, аккуратное письмо и работа с большими документами.',
+     power:'Контекст до миллиона токенов — можно загрузить книгу или весь репозиторий. На пятидесятой странице диалога помнит начало. Реже выдумывает факты.',
+     tricks:[
+       '<b>Artifacts</b> — таблицы, схемы и код открываются в отдельном окне рядом с чатом, а не тонут в ленте.',
+       '<b>Skills</b> — сохранённые инструкции для повторяющихся задач. Один раз объяснил правила — дальше он их держит.',
+       'Подключается к Google Диску, Календарю и почте — отвечает с учётом твоих файлов.',
+       'Умеет выполнять Python прямо в чате: загрузил таблицу — получил график.',
+       'Просьба «покажи цитаты из загруженного документа» резко снижает выдумки.'],
+     traps:[
+       '<b>Заход с российского IP грозит блокировкой аккаунта.</b> Если пользуешься через обход — держи его постоянно.',
+       'Картинки не генерирует, только анализирует.',
+       'Контекст на подписке за $20 заканчивается быстрее, чем ожидаешь.'],
+     links:['text:ChatGPT','code:Claude Code','research:NotebookLM'],
+     prompt:'Ты [роль].\nЗадача: [что сделать].\nДля кого: [аудитория и её боль].\nТон: [живой, без канцелярита].\nФормат: [объём и структура].\nНе используй: [штампы, воду, эмодзи].'},
+
+    {id:'gpt', name:'ChatGPT', tier:'S', cat:'text', art:'plate-text',
+     lead:'Универсал с самым низким порогом входа.',
+     power:'Закрывает почти любую задачу без переключений: текст, картинки, анализ таблиц, голосовой режим с камерой.',
+     tricks:[
+       '<b>Study Mode</b> — учит, а не решает за тебя: задаёт вопросы, проверяет понимание, ведёт по теме. Доступен на всех тарифах.',
+       'Сократический приём: <i>«Не исправляй текст. Задавай по одному вопросу, который поможет мне самому увидеть слабое место»</i>. Работает и для кода, и для бизнес-идей.',
+       'Символ <b>/</b> в поле ввода открывает меню команд — генерация, поиск, файлы.',
+       'Формула запроса: <b>роль → контекст → задача → формат</b>.',
+       'Живой режим: направь камеру на предмет и спроси — модель видит кадр.'],
+     traps:[
+       '<b>Temporary Chat не полностью приватен</b> — копия может храниться до 30 дней.',
+       'На длинных промптах теряет детали и усложняет ответ.',
+       'Не вводи то, что не повесил бы на доску в офисе.'],
+     links:['text:Claude','art:GPT Image 2','research:Deep Research'],
+     prompt:'Роль: ты [кто].\nКонтекст: [для кого и зачем].\nЗадача: [глагол + что именно].\nФормат: [таблица / список / JSON].\nОграничения: [чего избегать].'},
+
+    {id:'suno', name:'Suno', tier:'A', cat:'sound', art:'plate-sound',
+     lead:'Полноценная песня с вокалом за минуту.',
+     power:'Не фоновый луп, а трек с куплетами и припевом. Разделяет на дорожки — можно забрать отдельно вокал или инструментал.',
+     tricks:[
+       'Стиль задавай через жанр, темп и настроение, а не названия групп.',
+       'Проси <b>инструментал отдельно</b>, если поверх ляжет голос диктора.',
+       'Сгенерируй 2–3 варианта: разброс по качеству большой.',
+       'Структуру можно размечать тегами куплетов и припева прямо в тексте.'],
+     traps:['<b>10 треков в день</b> бесплатно.','Русский вокал местами ставит ударения не туда.'],
+     links:['sound:Udio','sound:ElevenLabs','video:Kling'],
+     prompt:'Жанр: [стиль]. Темп: [медленный].\nНастроение: [тёплое, ностальгическое].\nИнструменты: [гитара, клавиши].\nВокал: [женский низкий] / без вокала.\nДлительность [60] секунд.'},
+
+    {id:'eleven', name:'ElevenLabs', tier:'S', cat:'sound', art:'plate-sound',
+     lead:'Озвучка, которую не отличить от диктора.',
+     power:'Передаёт эмоции, паузы и дыхание. Клонирует голос по короткому образцу и дублирует видео с сохранением тембра.',
+     tricks:[
+       'Расставь <b>паузы и ударения прямо в тексте</b> — интонация оживёт.',
+       'Пиши так, как говоришь вслух: письменные обороты звучат мёртво.',
+       'Клон голоса — от 30 секунд чистой записи без шума.',
+       'Дубляж сохраняет твой тембр на другом языке.'],
+     traps:['<b>10 000 символов в месяц</b> бесплатно — около 10 минут речи.','Имена и термины проверяй на ударения.'],
+     links:['avatar:HeyGen','dub:ElevenLabs Dubbing','sound:Яндекс SpeechKit'],
+     prompt:'[Текст с расставленными паузами.]\nТемп средний, тон [дружелюбный].\nПаузы после каждого предложения.\nУдарения: [спорные слова].'},
+
+    {id:'aidentika', name:'Айдентика', tier:'A', cat:'mp', art:'plate-seller',
+     lead:'Карточки для маркетплейсов под ключ.',
+     power:'Заточена под WB и Ozon: товарные фото, инфографика с читаемым русским текстом, примерка одежды на моделях. Оплата картой РФ, VPN не нужен.',
+     tricks:[
+       'Загрузи фото с телефона — модель сама вытянет детали.',
+       'Не больше <b>3–4 выгод на слайд</b>: перегруженную карточку не читают.',
+       'Держи серию в одном стиле — узнаваемость поднимает конверсию.',
+       'Видео из фото работает как оживший первый слайд.'],
+     traps:['<b>6 бесплатных искр</b> при регистрации.','У Ozon инфографику нельзя ставить на главное фото.'],
+     links:['mp:Fabula AI','mp:MPCard','mp:Botika'],
+     prompt:'Товар: [что это, материал, выгода].\nПлощадка: [WB / Ozon], формат 3:4.\nНадписи: «[выгода 1]», «[выгода 2]».\nФон: [белый / лайфстайл].\nШрифт крупный, читаемый с телефона.'},
+
+    {id:'manus', name:'Manus', tier:'A', cat:'agent', art:'plate-agent',
+     lead:'Агент, который делает работу, а не советует.',
+     power:'Получает цель, сам раскладывает её на шаги, лезет в браузер, работает с файлами и приносит готовый результат.',
+     tricks:[
+       'Описывай <b>результат, а не процесс</b> — шаги он придумает сам.',
+       'Обязательно ставь запреты: не покупать, не отправлять письма, не публиковать.',
+       'Начни с мелкой задачи и проверь итог, прежде чем доверять важное.',
+       'Умеет работать по расписанию — задачи можно ставить заранее.'],
+     traps:['Медленнее обычного чата: это не для быстрых вопросов.','<b>1000 кредитов</b> при регистрации и 300 ежедневно.'],
+     links:['agent:n8n','agent:ChatGPT Agent','research:Deep Research'],
+     prompt:'Цель: [что должно быть на выходе].\nИсходные данные: [ссылки, файлы].\nОграничения: не покупать, не отправлять, не публиковать.\nРезультат отдай: [таблицей / файлом].'}
+  ];
+
+  // ── Приёмы: универсальные навыки поверх любой модели ────────────────
+  const SKILLS = [
+    {id:'formula', tag:'[БАЗА]', title:'Формула запроса',
+     lead:'Четыре блока, которые превращают «сделай красиво» в рабочее ТЗ.',
+     body:'Почти все промахи — от запроса без структуры. Держи четыре части: <b>роль</b> (кем должна быть модель), <b>контекст</b> (для кого и зачем), <b>задача</b> (глагол и что именно), <b>формат</b> (объём, структура). Пятым блоком добавляй ограничения — что <i>не</i> использовать. Он экономит больше времени, чем всё остальное вместе.',
+     steps:['Начни с роли: «Ты редактор делового издания»','Дай контекст: для кого текст и какую боль закрывает','Сформулируй задачу глаголом: напиши, сравни, разбери','Задай формат: объём, структура, вид результата','Перечисли запреты: без воды, без штампов, без эмодзи']},
+
+    {id:'socratic', tag:'[МЫШЛЕНИЕ]', title:'Сократический режим',
+     lead:'Модель задаёт вопросы, а не выдаёт готовое. Так находишь ошибку сам.',
+     body:'Готовый ответ экономит время, но не развивает понимание. Разверни диалог: <i>«Не исправляй и не называй проблему. Задавай по одному вопросу, который поможет мне самому заметить слабое место»</i>. Работает с текстом, кодом, бизнес-идеей и личным решением. Для проверки идеи: <i>«Сыграй критического интервьюера. Спрашивай про проблему, аудиторию, ценность и риски. Не предлагай решений, пока я не отвечу»</i>.',
+     steps:['Запрети сразу давать ответ','Проси по одному вопросу за раз','Отвечай честно, не подгоняя под желаемое','Следующий вопрос модель выберет по твоему ответу','Решение сформулируй сам — так оно запомнится']},
+
+    {id:'refs', tag:'[ВИЗУАЛ]', title:'Работа с референсами',
+     lead:'Главный навык в картинках и видео. Слова описывают что, референс — как.',
+     body:'Текстом почти невозможно передать стиль. Референс делает это одним файлом. В Midjourney за это отвечают <b>--sref</b> (эстетика) и <b>--cref</b> (лицо героя). Nano Banana Pro принимает <b>до 14 изображений разом</b> и рассуждает, как они связаны: этот кадр — структура, этот — текстура, эти пять — лицо. Для видео референс превращается в первый кадр через image-to-video.',
+     steps:['Собери эталонный кадр героя: фронтально, лицо крупно, ровный свет','Для стиля бери кадр с нужной атмосферой, не с нужным сюжетом','Проверь, чтобы свет на референсе совпадал с описанием в промпте','В видео используй эталон как первый кадр — лицо не поплывёт','Сохраняй удачные референсы в отдельную папку — это твой актив']},
+
+    {id:'negative', tag:'[ТОЧНОСТЬ]', title:'Негативные промпты',
+     lead:'Сказать, чего быть не должно, — часто важнее описания.',
+     body:'Модель заполняет пустоты тем, что считает нормой. Её норма и твоя расходятся. В картинках это <b>--no text, watermark, frame</b>. В тексте — блок «не используй». В видео — <i>без лишних людей, без мультяшности, без смены лица</i>. В правках фото фраза <b>«всё остальное оставить без изменений»</b> реально работает.',
+     steps:['Посмотри на неудачный результат и выпиши, что мешает','Перенеси это в запреты дословно','В правках всегда добавляй «остальное не менять»','Не запрещай больше пяти вещей разом — размывается']},
+
+    {id:'iterate', tag:'[ПРОЦЕСС]', title:'Итерации вместо идеала',
+     lead:'Не жди попадания с первого раза. Меняй по одному параметру.',
+     body:'Ошибка новичка — переписать промпт целиком, получив не то. Правильно: <b>меняй одну переменную за раз</b>. Тогда понятно, что повлияло. В видео нормально сделать 2–4 попытки на клип. Если сцена разваливается — упрости движение. Если лицо плывёт — убери резкие повороты. Если объекты летают — добавь «реалистичная физика, вес».',
+     steps:['Получил кадр — назови одну вещь, которая не нравится','Правь только её, остальное не трогай','Удачный промпт сохраняй в отдельный файл','Свои находки собирай в личную библиотеку — она ценнее чужих подборок']},
+
+    {id:'safety', tag:'[БЕЗОПАСНОСТЬ]', title:'Что нельзя отправлять',
+     lead:'Простое правило: не вводи то, что не повесил бы на доску в офисе.',
+     body:'Публичные версии моделей могут использовать переписку для обучения. Режим временного чата снижает сохранение, но <b>не делает разговор невидимым</b> — копия может храниться до 30 дней. Подключённые сторонние приложения работают по своим правилам.',
+     steps:['Убирай из документов имена, суммы и реквизиты','Маскируй: вместо «Иван из Газпрома» — «клиент А из энергетики»','Пароли, ключи и карты — никогда','Для чувствительного бери локальную модель или российский сервис','Проверяй, что делает подключённое приложение с твоими файлами']},
+
+    {id:'mcp', tag:'[ПРОДВИНУТОЕ]', title:'MCP: один разъём для всего',
+     lead:'Стандарт, который позволяет модели работать с твоими сервисами напрямую.',
+     body:'MCP — общий протокол подключения. Настроил один раз — работает в Claude, ChatGPT и Gemini без переделок. Модель получает доступ к почте, календарю, базе, репозиторию и действует там сама. Это то, что превращает чат в рабочего сотрудника.',
+     steps:['Начни с готовых серверов: файлы, GitHub, поиск','Подключение занимает пару минут в настройках','Давай доступ по одному сервису и проверяй результат','Помни: у модели появляется право действовать — ограничения обязательны']},
+
+    {id:'stack', tag:'[СТРАТЕГИЯ]', title:'Стек вместо одной модели',
+     lead:'Универсальной лучшей нет. Выигрывает тот, у кого набор под задачи.',
+     body:'Частая ошибка — найти одну модель и использовать её для всего. Это как ездить на велосипеде и на работу, и за город. Сильные пользователи держат <b>2–3 инструмента под разные задачи</b> и переключаются. Текст — одна модель, картинка — другая, видео — третья.',
+     steps:['Раздели задачи по типам: текст, визуал, звук, рутина','Под каждый тип возьми одного основного и одного запасного','Через агрегатор это дешевле, чем три отдельные подписки','Раз в пару месяцев пересматривай: рынок меняется быстро']}
+  ];
+
   const CHANGELOG = [
+    {date:'27 июля 2026', tag:'[ДОБАВИЛ]', title:'Разборы топ-моделей с приёмами',
+     text:'По каждой ключевой модели — <b>за что берут, какие параметры решают и где обожжёшься</b>. Внутри реальная конкретика: <b>--sref</b> и <b>--cref</b> у Midjourney, 14 референсов у Nano Banana, реплики через двоеточие у Veo.'},
+    {date:'27 июля 2026', tag:'[ДОБАВИЛ]', title:'Раздел «Приёмы»',
+     text:'Восемь навыков, которые работают с любой моделью: формула запроса, сократический режим, работа с референсами, негативные промпты и что <b>нельзя отправлять в чат</b>.'},
     {date:'27 июля 2026', tag:'[УБРАЛ]', title:'Sora больше не в каталоге',
      text:'Приложение отключено, API догорает до сентября. Вместо него по видео — <b>Veo 3, Kling и Seedance</b>.'},
     {date:'27 июля 2026', tag:'[ДОБАВИЛ]', title:'Целый раздел для селлеров',
@@ -3471,7 +3925,7 @@
   // ── Дашборд: переключение экранов ───────────────────────────────────
   const navSaved=document.getElementById('navSaved');
   const navSavedN=document.getElementById('navSavedN');
-  const VIEWS=['home','catalog','recipes','saved','pay','news'];
+  const VIEWS=['home','top','skills','catalog','recipes','saved','pay','news'];
 
   function showView(name, push){
     if(!VIEWS.includes(name)) name='home';
@@ -3513,6 +3967,160 @@
   window.addEventListener('popstate',()=>{
     showView((location.hash||'#home').slice(1)||'home', false);
   });
+
+  // ── Топ-модели ──────────────────────────────────────────────────────
+  function renderTop(box, list){
+    box=box||document.getElementById('topGrid');
+    if(!box) return;
+    box.innerHTML='';
+    (list||TOP_MODELS).forEach(m=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='top-card';
+      b.dataset.model=m.id;
+      b.innerHTML=
+        '<span class="top-art"><picture>'+
+          '<source srcset="art/'+m.art+'.webp" type="image/webp">'+
+          '<img src="art/'+m.art+'.jpg" alt="" width="760" height="415" loading="lazy" decoding="async">'+
+        '</picture></span>'+
+        '<span class="top-body">'+
+          '<span class="top-head"><span class="tier'+(m.tier==='S'?' s':'')+'">'+m.tier+'</span><h3>'+m.name+'</h3></span>'+
+          '<p>'+m.lead+'</p>'+
+          '<span class="n">'+(m.tricks.length+m.traps.length)+' приёмов и граблей →</span>'+
+        '</span>';
+      box.appendChild(b);
+    });
+    box.addEventListener('click',e=>{
+      const c=e.target.closest('.top-card');
+      if(c) openModel(c.dataset.model);
+    });
+  }
+
+  const BR_ICO={
+    power:'<path d="M13 2L4 14h6l-1 8 9-12h-6z"/>',
+    tricks:'<path d="M12 3l1.9 5.3L19 10l-5.1 1.7L12 17l-1.9-5.3L5 10l5.1-1.7z"/>',
+    traps:'<path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6A2 2 0 0 0 22 18L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+    links:'<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>',
+    prompt:'<path d="M4 5h16M4 12h10M4 19h7"/>'
+  };
+  const branchHead=(k,t)=>'<div class="branch-h"><span class="ico">'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+BR_ICO[k]+'</svg>'+
+    '</span><h4>'+t+'</h4></div>';
+
+  // Профиль модели открывается в общем оверлее — как связки и шпаргалки.
+  function openModel(id){
+    const m=TOP_MODELS.find(x=>x.id===id);
+    if(!m) return;
+    lastFocus=document.activeElement;
+    step=3;
+    wiz.hidden=false;
+    document.body.classList.add('locked');
+    requestAnimationFrame(()=>{ wiz.classList.add('open'); drawModel(m); });
+  }
+
+  function drawModel(m){
+    wizProg.style.width='100%';
+    wizStepN.textContent='Профиль';
+    wizBack.hidden=true;
+    const s=document.createElement('div');
+    s.className='step';
+
+    const linked=m.links.map(k=>toolByKey(k)).filter(Boolean);
+
+    s.innerHTML='<div class="res-head">'+
+      '<div class="tag">Уровень '+m.tier+' · '+(ALL_CATS.find(c=>c.id===m.cat)||{code:''}).code+'</div>'+
+      '<h2 id="wizHeading">'+m.name+'</h2>'+
+      '<p>'+m.lead+'</p></div>'+
+
+      '<div class="branch">'+branchHead('power','Главная сила')+'<p>'+m.power+'</p></div>'+
+
+      '<div class="branch">'+branchHead('tricks','Приёмы и параметры')+
+        '<ul>'+m.tricks.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>'+
+
+      '<div class="branch warn">'+branchHead('traps','Подводные камни')+
+        '<ul>'+m.traps.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>'+
+
+      (linked.length?'<div class="branch">'+branchHead('links','С чем связать')+
+        '<div class="link-row">'+linked.map(t=>
+          '<button class="link-chip" type="button" data-jump="'+keyOf(t)+'">'+t.name+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'+
+          '</button>').join('')+'</div></div>':'')+
+
+      '<div class="branch">'+branchHead('prompt','Готовый скелет промпта')+
+        '<div class="kit-block"><pre>'+m.prompt.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre></div></div>'+
+
+      '<div class="res-actions">'+
+        '<button class="btn-solid" id="mCopy" type="button">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>'+
+          'Скопировать скелет</button>'+
+        '<button class="btn-ghost" id="mClose" type="button">Закрыть</button>'+
+      '</div>';
+    mount(s);
+
+    s.querySelector('#mCopy').addEventListener('click',()=>copyText(m.prompt));
+    s.querySelector('#mClose').addEventListener('click',closeWiz);
+    s.querySelectorAll('[data-jump]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const name=(toolByKey(btn.dataset.jump)||{}).name||'';
+        closeWiz();
+        setTimeout(()=>{
+          showView('catalog');
+          searchInput.value=name;
+          searchClear.classList.add('on');
+          render();
+        }, reduced()?0:340);
+      });
+    });
+  }
+
+  // ── Приёмы ──────────────────────────────────────────────────────────
+  function renderSkills(){
+    const box=document.getElementById('skillGrid');
+    if(!box) return;
+    box.innerHTML='';
+    SKILLS.forEach(k=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='skill-card';
+      b.dataset.skill=k.id;
+      b.innerHTML='<div class="tag">'+k.tag+'</div><h3>'+k.title+'</h3><p>'+k.lead+'</p>';
+      box.appendChild(b);
+    });
+    box.addEventListener('click',e=>{
+      const c=e.target.closest('.skill-card');
+      if(c) openSkill(c.dataset.skill);
+    });
+  }
+
+  function openSkill(id){
+    const k=SKILLS.find(x=>x.id===id);
+    if(!k) return;
+    lastFocus=document.activeElement;
+    step=3;
+    wiz.hidden=false;
+    document.body.classList.add('locked');
+    requestAnimationFrame(()=>{ wiz.classList.add('open'); drawSkill(k); });
+  }
+
+  function drawSkill(k){
+    wizProg.style.width='100%';
+    wizStepN.textContent='Приём';
+    wizBack.hidden=true;
+    const s=document.createElement('div');
+    s.className='step';
+    s.innerHTML='<div class="res-head">'+
+      '<div class="tag">'+k.tag+'</div>'+
+      '<h2 id="wizHeading">'+k.title+'</h2>'+
+      '<p>'+k.lead+'</p></div>'+
+      '<div class="branch"><p>'+k.body+'</p></div>'+
+      '<div class="branch">'+branchHead('prompt','Как применить')+
+        '<ol class="step-list">'+k.steps.map(x=>'<li>'+x+'</li>').join('')+'</ol></div>'+
+      '<div class="res-actions">'+
+        '<button class="btn-ghost" id="sClose" type="button">Закрыть</button>'+
+      '</div>';
+    mount(s);
+    s.querySelector('#sClose').addEventListener('click',closeWiz);
+  }
 
   // ── Лента «Что изменилось» ──────────────────────────────────────────
   function renderNews(){
@@ -4014,11 +4622,15 @@
   function fillStats(){
     const lnk=document.getElementById('allRecLink');
     if(lnk) lnk.textContent='Все '+RECIPES.length+' связок →';
+    const tl=document.getElementById('allTopLink');
+    if(tl) tl.textContent='Все '+TOP_MODELS.length+' моделей →';
     document.getElementById('statTools').textContent=ALL_TOOLS.length;
     document.getElementById('statCats').textContent=ALL_CATS.length;
     document.getElementById('statFree').textContent=
       ALL_TOOLS.filter(t=>/без VPN|локально/i.test(t.access)).length;
     document.getElementById('statRec').textContent=RECIPES.length;
+    document.getElementById('statTop').textContent=TOP_MODELS.length;
+    document.getElementById('statSkill').textContent=SKILLS.length;
   }
 
   initTheme();
@@ -4027,6 +4639,9 @@
   renderRecipes();
   renderRecPreview();
   renderNews();
+  renderTop();
+  renderTop(document.getElementById('topPreview'), TOP_MODELS.filter(m=>m.tier==='S').slice(0,4));
+  renderSkills();
   renderTiles();
   render();
   wireGrid(gridEl);
