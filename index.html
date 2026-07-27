@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Какая нейросеть под задачу — находки Alexandrov Studio</title>
-<meta name="description" content="94 нейросети по задачам, разборы топ-моделей с приёмами и параметрами, 17 готовых связок и честные лимиты бесплатных тарифов. Находки Alexandrov Studio." />
+<meta name="description" content="94 нейросети по задачам, полный разбор Claude в 14 главах, разборы топ-моделей с приёмами и 17 готовых связок. Находки Alexandrov Studio." />
 <meta name="theme-color" content="#F6F2EA" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#191512" media="(prefers-color-scheme: dark)" />
 <link rel="canonical" href="https://alexandrov41.github.io/nahodki/" />
@@ -1637,6 +1637,167 @@
     .skill-card{padding:18px;}
   }
 
+  /* ---------- супер-раздел Claude ---------- */
+  .lvl-sec{margin-bottom:44px;}
+  .lvl-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin:0 0 6px;
+  }
+  .lvl-num{
+    font-family:'Prata',serif;
+    font-size:37px;
+    line-height:1;
+    color:var(--amber);
+    flex:none;
+  }
+  .lvl-head h3{
+    font-family:'Prata',serif;
+    font-weight:400;
+    font-size:26px;
+    margin:0;
+    letter-spacing:-.01em;
+  }
+  .lvl-lead{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 18px 51px;
+    max-width:560px;
+    line-height:1.55;
+  }
+  @media (max-width:680px){ .lvl-lead{margin-left:0;} }
+
+  .cl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .cl-card{
+    text-align:left;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+    cursor:pointer;
+    font-family:'Onest',sans-serif;
+    color:var(--ink);
+    transition:border-color .22s ease,transform .22s ease,box-shadow .22s ease;
+  }
+  .cl-card:hover{border-color:var(--amber);transform:translateY(-2px);box-shadow:var(--shadow);}
+  .cl-card:focus-visible{outline:2px solid var(--amber);outline-offset:3px;}
+  .cl-card .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    margin-bottom:11px;
+  }
+  .cl-card h4{
+    font-family:'Onest',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    margin:0 0 7px;
+    letter-spacing:-.01em;
+  }
+  .cl-card p{margin:0;font-size:15px;line-height:1.5;color:var(--ink-soft);}
+
+  /* блок кода внутри разбора */
+  .code-block{
+    background:var(--paper);
+    border:1px solid var(--line-strong);
+    border-radius:12px;
+    padding:16px 18px;
+    margin:0;
+    overflow-x:auto;
+  }
+  .code-block pre{
+    margin:0;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    line-height:1.7;
+    color:var(--ink);
+    white-space:pre;
+  }
+  .branch p code, .cl-body code{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.88em;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:2px 6px;
+    color:var(--amber-deep);
+  }
+
+  .warn-box{
+    display:flex;
+    gap:11px;
+    align-items:flex-start;
+    background:color-mix(in srgb, var(--wine) 8%, var(--paper));
+    border:1px solid color-mix(in srgb, var(--wine) 28%, var(--line-strong));
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--ink-soft);
+  }
+  @supports not (background: color-mix(in srgb, red 10%, blue)){
+    .warn-box{background:var(--paper);border-color:var(--line-strong);}
+  }
+  .warn-box svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--wine);}
+  .warn-box b{color:var(--ink);font-weight:600;}
+
+  /* сравнительная таблица */
+  .cmp{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:8px;
+  }
+  .cmp-col{
+    background:var(--card);
+    border:1px solid var(--line-strong);
+    border-radius:14px;
+    padding:20px;
+  }
+  .cmp-col h4{
+    font-family:'Onest',sans-serif;
+    font-weight:700;
+    font-size:18px;
+    margin:0 0 4px;
+    letter-spacing:-.01em;
+  }
+  .cmp-q{
+    font-family:'Prata',serif;
+    font-size:15px;
+    color:var(--amber-deep);
+    margin:0 0 14px;
+  }
+  .cmp-row{
+    border-top:1px solid var(--line);
+    padding-top:10px;
+    margin-top:10px;
+  }
+  .cmp-row .l{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    display:block;
+    margin-bottom:4px;
+  }
+  .cmp-row .v{font-size:14px;line-height:1.5;color:var(--ink);}
+
+  @media (max-width:900px){
+    .cl-grid{grid-template-columns:1fr;}
+    .cmp{grid-template-columns:1fr;}
+  }
+  @media (max-width:680px){
+    .cl-card{padding:18px;}
+    .lvl-num{font-size:30px;}
+    .lvl-head h3{font-size:22px;}
+    .code-block{padding:13px 14px;}
+    .code-block pre{font-size:12px;}
+  }
+
   /* ---------- лента «Что изменилось» ---------- */
   .news-list{list-style:none;padding:0;margin:0;}
   .news-item{
@@ -2029,6 +2190,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h7M4 12h16M4 17h11"/><circle cx="17" cy="7" r="2"/><circle cx="19" cy="17" r="2"/></svg>
         Связки
       </button>
+      <button class="nav-link" type="button" data-go="claude">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/><path d="M17 3l1.5 3L22 7.5 18.5 9 17 12l-1.5-3L12 7.5 15.5 6z"/></svg>
+        Claude
+      </button>
       <button class="nav-link" type="button" data-go="top">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg>
         Топ-модели
@@ -2076,6 +2241,7 @@
       <div class="stat"><b id="statRec">0</b><span>готовых связок</span></div>
       <div class="stat"><b id="statTop">0</b><span>разборов моделей</span></div>
       <div class="stat"><b id="statSkill">0</b><span>приёмов</span></div>
+      <div class="stat"><b id="statClaude">0</b><span>разборов Claude</span></div>
     </div>
   </section>
 
@@ -2118,6 +2284,10 @@
       <button class="entry" type="button" data-go="catalog">
         <span class="entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
         <span><h3>Весь каталог</h3><p>Поиск по названию и задаче, фильтр «работает без VPN»</p></span>
+      </button>
+      <button class="entry" type="button" data-go="claude">
+        <span class="entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/><path d="M17 3l1.5 3L22 7.5 18.5 9 17 12l-1.5-3L12 7.5 15.5 6z"/></svg></span>
+        <span><h3>Claude: полный разбор</h3><p>14 разборов от первого запроса до агента в терминале</p></span>
       </button>
       <button class="entry" type="button" data-go="skills">
         <span class="entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.2 1 6.3L12 16.8 6.5 19.5l1-6.3L3 9l6-1z"/></svg></span>
@@ -2224,6 +2394,26 @@
     <h2 class="view-title" id="topTitle">Топ-модели</h2>
     <p class="view-lead">Разбор ключевых моделей: <b>за что берут, какие параметры решают, где обожжёшься</b> и с чем связать. Не описание, а рабочая шпаргалка.</p>
     <div class="top-grid" id="topGrid"></div>
+  </section>
+
+  <section class="view" id="view-claude" aria-labelledby="claudeTitle">
+    <div class="view-head">
+      <button class="back-btn" type="button" data-back>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        На главную
+      </button>
+    </div>
+    <h2 class="view-title" id="claudeTitle">Claude: полный разбор</h2>
+    <p class="view-lead">Всё, что нужно знать — от первого запроса до агента в терминале. <b>Три уровня погружения</b>: старт, мастерство, продвинутое. Каждая карточка раскрывается в подробный разбор с примерами.</p>
+    <div id="claudeLevels"></div>
+
+    <section class="tiles-sec" aria-labelledby="cmpTitle">
+      <div class="results-head">
+        <h2 id="cmpTitle">Проекты, навыки и MCP</h2>
+        <span class="count">что выбрать</span>
+      </div>
+      <div class="cmp" id="cmpGrid"></div>
+    </section>
   </section>
 
   <section class="view" id="view-skills" aria-labelledby="skillsTitle">
@@ -3435,7 +3625,179 @@
      steps:['Раздели задачи по типам: текст, визуал, звук, рутина','Под каждый тип возьми одного основного и одного запасного','Через агрегатор это дешевле, чем три отдельные подписки','Раз в пару месяцев пересматривай: рынок меняется быстро']}
   ];
 
+  // ── СУПЕР-РАЗДЕЛ CLAUDE ─────────────────────────────────────────────
+  // Три уровня погружения: старт → мастерство → продвинутое.
+  // Данные собраны из документации Anthropic и разборов практиков 2026.
+  const CLAUDE_LEVELS = [
+    {id:'start', num:'01', title:'Старт', lead:'Что это, сколько стоит и как вообще получить доступ.'},
+    {id:'craft', num:'02', title:'Мастерство', lead:'Приёмы, которые отличают новичка от того, кто выжимает максимум.'},
+    {id:'pro',   num:'03', title:'Продвинутое', lead:'Skills, MCP и Claude Code — превращение чата в рабочего сотрудника.'}
+  ];
+
+  const CLAUDE_CARDS = [
+    // ══ УРОВЕНЬ 1: СТАРТ ══
+    {id:'what', lvl:'start', tag:'[ОСНОВА]', title:'В чём Claude сильнее других',
+     lead:'Длинный контекст, аккуратное письмо и честность.',
+     body:'Три вещи, за которые его берут вместо остальных.<br><br><b>Контекст до миллиона токенов.</b> Это примерно 750 тысяч слов — можно загрузить книгу, годовой отчёт или весь репозиторий целиком. На пятидесятой странице диалога Claude помнит, что обсуждали в начале.<br><br><b>Меньше выдумок.</b> Модель обучена по принципу «конституции» — набора правил, где честность стоит выше желания угодить. На практике: чаще признаёт, что не знает, вместо уверенного вранья.<br><br><b>Чувство языка.</b> Пишет живее остальных: меньше канцелярита и «воды», лучше держит заданный тон на длинной дистанции.',
+     steps:[
+       'Загружай длинные документы целиком — не режь на куски',
+       'Проси цитаты из источника: резко снижает выдумки',
+       'Для длинных текстов и разбора документов — это лучший выбор',
+       'Картинки он <b>не генерирует</b>, только анализирует'],
+     warn:'Не универсал. Для генерации картинок, видео и звука нужны другие модели.'},
+
+    {id:'plans', lvl:'start', tag:'[ДЕНЬГИ]', title:'Тарифы и лимиты без иллюзий',
+     lead:'Что реально даёт бесплатный план и когда пора платить.',
+     body:'<b>Free.</b> Доступ к средней модели, примерно 15 сообщений за каждые 5 часов — в часы пик меньше. Есть Проекты, Артефакты, веб-поиск и загрузка файлов. Нет: самой мощной модели, расширенного мышления, памяти между диалогами и Claude Code. По умолчанию данные могут использоваться для обучения.<br><br><b>Pro — около $20 в месяц.</b> Все модели, лимит примерно в пять раз выше, расширенное мышление, память между сессиями, Claude Code, приоритет в часы пик. Обучение на твоих данных можно отключить. Большинству этого хватает.<br><br><b>Max — $100 или $200.</b> Те же функции, но лимит в 5 или 20 раз выше Pro. Нужен, если работаешь в Claude Code по несколько часов ежедневно и упираешься в потолок.<br><br><b>API.</b> Оплата за токены. Выгоден при расходе меньше $20 в месяц или когда встраиваешь модель в свой продукт.',
+     steps:[
+       'Начни с Free и пойми, упираешься ли в лимит',
+       'Упираешься каждый день — бери Pro, годовая оплата дешевле примерно на 15%',
+       'Ждёшь сброса лимита в Claude Code — только тогда Max',
+       'Лимит общий: браузер и Claude Code тратят один бюджет'],
+     warn:'Claude Code на бесплатном плане недоступен полностью — ни в терминале, ни в редакторе.'},
+
+    {id:'access', lvl:'start', tag:'[РОССИЯ]', title:'Доступ и оплата из России',
+     lead:'Честно о барьерах и о том, что реально работает.',
+     body:'Anthropic <b>официально не поддерживает Россию</b>. С российского адреса сайт показывает экран блокировки, номера +7 не проходят верификацию. Российские карты не принимаются с 2022 года — и отдельно отклоняются предоплаченные и подарочные карты, даже зарубежные.<br><br>Главная ошибка — <b>несоответствие данных</b>. Сервис думает, что вы в США, карта выпущена в Казахстане, а часовой пояс московский. Такой противоречивый набор повышает риск блокировки аккаунта сильнее, чем сам факт обхода.<br><br>Что работает: карта банка дружественной страны напрямую, оплата через приложение на телефоне подарочными кодами, посредник за рубли. Покупка готовых аккаунтов — плохая идея: их блокируют, а продавец может вернуть себе доступ.',
+     steps:[
+       'Выбери одну страну и держи её везде: адрес, почта, карта, часовой пояс',
+       'Не переключай регион туда-сюда — это главный красный флаг',
+       'Предоплаченные и подарочные карты обычно отклоняются процессингом',
+       'Готовые аккаунты с подпиской не покупай'],
+     warn:'Заход с российского адреса на существующий аккаунт может привести к блокировке. Если пользуешься обходом — держи его постоянно.'},
+
+    // ══ УРОВЕНЬ 2: МАСТЕРСТВО ══
+    {id:'xml', lvl:'craft', tag:'[ГЛАВНЫЙ ПРИЁМ]', title:'XML-теги: самое сильное, что есть',
+     lead:'Claude специально обучен распознавать структуру. Это меняет качество больше всего.',
+     body:'Когда в запросе смешаны инструкция, данные и примеры, модель может их перепутать. Теги разделяют смыслы явно — и Claude перестаёт угадывать.<br><br>Названия тегов любые, главное — <b>осмысленные и одинаковые</b> во всех промптах. Стандартный набор: <code>&lt;role&gt;</code>, <code>&lt;instructions&gt;</code>, <code>&lt;context&gt;</code>, <code>&lt;example&gt;</code>, <code>&lt;output_format&gt;</code>, <code>&lt;constraints&gt;</code>.<br><br>Приём складывается с остальными: попроси рассуждать в <code>&lt;thinking&gt;</code>, а ответ дать в <code>&lt;answer&gt;</code> — получишь и ход мысли для проверки, и чистый результат, который легко забрать отдельно.',
+     code:'<role>\nТы редактор делового издания.\n</role>\n\n<context>\nТекст для рассылки. Аудитория — владельцы малого бизнеса.\n</context>\n\n<instructions>\n1. Перепиши текст ниже.\n2. Убери канцелярит и воду.\n3. Сохрани все цифры без изменений.\n</instructions>\n\n<constraints>\nНе больше 200 слов. Без эмодзи. Без вводных оборотов.\n</constraints>\n\n<text>\n[вставь исходный текст]\n</text>',
+     steps:[
+       'Заведи свой набор тегов и используй одни и те же',
+       'Ссылайся на них в тексте: «по документу в тегах document»',
+       'Вкладывай теги, когда есть иерархия',
+       'Проси ответ тоже в тегах — легче забирать нужный кусок'],
+     warn:''},
+
+    {id:'longctx', lvl:'craft', tag:'[КОНТЕКСТ]', title:'Как кормить длинные документы',
+     lead:'Порядок блоков в запросе влияет на качество сильнее, чем кажется.',
+     body:'Главное правило: <b>длинный документ идёт наверх, вопрос — вниз</b>. Инструкция в конце заметно поднимает качество ответа. Многие делают наоборот — сначала вопрос, потом простыня текста — и получают поверхностный разбор.<br><br>Если документов несколько, оборачивай каждый в свой тег с указанием источника. Тогда Claude не смешает их и сможет сослаться на конкретный.<br><br>Отдельный приём против выдумок: сначала попроси <b>процитировать релевантные куски</b>, и только потом отвечать. Это заставляет искать доказательство в тексте, а не сочинять правдоподобное.',
+     code:'<documents>\n  <document index="1">\n    <source>Отчёт за 2025 год</source>\n    <content>[текст документа]</content>\n  </document>\n  <document index="2">\n    <source>Отчёт за 2026 год</source>\n    <content>[текст документа]</content>\n  </document>\n</documents>\n\nСначала выпиши в <quotes> цитаты, относящиеся к вопросу.\nПотом в <answer> дай ответ, опираясь только на них.\nЕсли данных нет — так и напиши, не додумывай.\n\nВопрос: как изменилась выручка и за счёт чего?',
+     steps:[
+       'Документ наверх, вопрос вниз — всегда',
+       'Каждый источник в отдельный тег с названием',
+       'Проси цитаты перед ответом',
+       'Добавляй «если данных нет — так и напиши»'],
+     warn:''},
+
+    {id:'think', lvl:'craft', tag:'[РАССУЖДЕНИЕ]', title:'Заставить думать, а не выпаливать',
+     lead:'На сложных задачах пространство для размышления резко поднимает точность.',
+     body:'Три уровня глубины. <b>Простой</b> — добавить «думай шаг за шагом». <b>Направленный</b> — перечислить, о чём именно подумать. <b>Структурный</b> — развести рассуждение и ответ по разным тегам. Третий лучше всех: видно ход мысли и легко забрать чистый вывод.<br><br>На платных планах есть <b>расширенное мышление</b> — модель рассуждает дольше перед ответом. Для него совет обратный привычному: давай <b>общее направление, а не пошаговый рецепт</b>. Модель часто находит ход лучше того, что вы бы прописали.<br><br>И всегда проси проверить работу перед тем, как объявить её законченной.',
+     code:'Задача: [описание].\n\nСначала в <thinking> разбери:\n— какие есть варианты\n— чем они отличаются по рискам\n— что перевешивает\n\nПотом в <answer> дай короткую рекомендацию\nи одну причину, почему именно она.\n\nПеред ответом перепроверь расчёты.',
+     steps:[
+       'Простая задача — обойдись без этого, будет только длиннее',
+       'Сложная — разведи thinking и answer по тегам',
+       'В расширенном мышлении не диктуй шаги, задай направление',
+       'Проси самопроверку в конце'],
+     warn:''},
+
+    {id:'examples', lvl:'craft', tag:'[ТОЧНОСТЬ]', title:'Примеры вместо объяснений',
+     lead:'Два-три показанных образца работают лучше абзаца описаний.',
+     body:'Самая быстрая дорога от «я объяснил» до «он понял». Опиши формат словами — получишь приблизительное попадание. Покажи два примера — получишь точное.<br><br>Правила простые: <b>2–5 примеров</b>, каждый в своём теге, разнообразные — чтобы покрыть и типичный случай, и пограничный. Без примеров Claude часто добавляет лишние пояснения и плавает в оформлении.<br><br>Ещё один приём — <b>prefill</b>: начать ответ за модель. Если задать первые символы, дальше она продолжит в том же формате. Работает как жёсткая рамка для структуры.',
+     code:'<examples>\n  <example>\n    <input>Дашборд тормозит, кнопку экспорта не найти</input>\n    <output>Категория: Интерфейс, Производительность\nТон: негативный\nПриоритет: высокий</output>\n  </example>\n  <example>\n    <input>Было бы здорово добавить тёмную тему</input>\n    <output>Категория: Запрос функции\nТон: нейтральный\nПриоритет: низкий</output>\n  </example>\n</examples>\n\nРазбери по той же схеме: [новый отзыв]',
+     steps:[
+       'Бери примеры из своих реальных задач, не выдуманные',
+       'Один пример — типичный, один — пограничный',
+       'Оборачивай каждый в тег example',
+       'Нужен жёсткий формат — начни ответ за модель сама'],
+     warn:''},
+
+    {id:'artifacts', lvl:'craft', tag:'[ФИШКА]', title:'Артефакты: результат в отдельном окне',
+     lead:'Код, таблицы и схемы открываются рядом с чатом и не тонут в ленте.',
+     body:'Попроси собрать калькулятор, лендинг, график или схему — Claude сгенерирует код и <b>сразу отрисует рабочий результат</b> в боковой панели. Дальше правишь его разговором: «сделай кнопку крупнее», «поменяй палитру на тёплую».<br><br>Это удобнее обычного чата в двух случаях: когда результат нужно <b>видеть</b>, а не читать код, и когда правок будет много. Артефакт обновляется на месте, а не плодит десять версий в ленте.<br><br>Внутри артефакта нельзя править текст руками — только через просьбу. Зато можно выделить фрагмент и попросить объяснить или улучшить именно его.',
+     steps:[
+       'Проси «сделай интерактивную страницу», а не «напиши код»',
+       'Правь разговором, версия обновится на месте',
+       'Выделяй фрагмент, чтобы обсудить конкретное место',
+       'Готовый артефакт можно опубликовать ссылкой'],
+     warn:'Для документов, которые пойдут в PowerPoint или на печать, артефакт не годится — вёрстка поедет.'},
+
+    {id:'projects', lvl:'craft', tag:'[ПАМЯТЬ]', title:'Проекты: контекст, который не надо повторять',
+     lead:'Рабочее пространство со своими файлами и инструкциями.',
+     body:'Проект — это папка с постоянным контекстом. Загружаешь туда документы, бренд-гайд, примеры своих текстов, пишешь инструкции — и <b>всё это доступно в каждом чате внутри проекта</b>. Не нужно объяснять заново в тысячный раз.<br><br>Формула, которая помогает не путаться: проект говорит «вот <b>что</b> надо знать», навык — «вот <b>как</b> это делать», коннектор — «вот <b>инструмент</b>».<br><br>Практика: заведи отдельный проект под каждое направление. Один для канала со своим тоном и примерами постов, другой для клиентских задач с их материалами. Смешивать в одном — значит размывать контекст.',
+     steps:[
+       'Загрузи в проект то, что объясняешь каждый раз',
+       'В инструкциях опиши тон, запреты и формат',
+       'Держи проекты узкими: один проект — одно направление',
+       'Общие правила («всегда на вы») ставь в глобальные настройки'],
+     warn:''},
+
+    // ══ УРОВЕНЬ 3: ПРОДВИНУТОЕ ══
+    {id:'trio', lvl:'pro', tag:'[РАЗБОР]', title:'Skills, Проекты и MCP: кто за что',
+     lead:'Три механизма, которые постоянно путают. Разбираем раз и навсегда.',
+     body:'Формула от самой Anthropic: <b>Проекты — «вот что надо знать». Навыки — «вот как это делать». MCP — «вот инструмент».</b><br><br>Аналогия ещё проще: MCP выдаёт кухню, навык даёт рецепт, проект — это мастерская, где лежат чертежи.<br><br><b>Разница в цене контекста огромна.</b> Навык стоит около сотни токенов, пока не вызван — полная инструкция подгружается, только когда задача действительно про него. А пять подключённых MCP-серверов съедают десятки тысяч токенов сразу, при каждом запросе. Отсюда рабочее правило: <b>много навыков, мало серверов</b>.<br><br>Как выбрать: нужен доступ к системе, куда Claude сейчас не дотягивается — это MCP. Доступ есть, но вы устали объяснять один и тот же порядок действий — это навык. Нужно, чтобы он просто знал ваш контекст — это проект.',
+     steps:[
+       'Всё, что объясняешь повторно, — кандидат в навык',
+       'Внешние системы (почта, база, репозиторий) — только MCP',
+       'Подключай серверы по одному и проверяй, что он их правильно зовёт',
+       'Боевая связка: проект для контекста + MCP для данных + навык для процедуры'],
+     warn:''},
+
+    {id:'skills', lvl:'pro', tag:'[НАВЫКИ]', title:'Skills: научить один раз',
+     lead:'Папка с инструкцией, которую Claude подхватывает сам, когда задача подходит.',
+     body:'Навык — это папка с файлом <code>SKILL.md</code>. Сверху — короткий блок с именем и описанием, ниже — инструкции обычным текстом. Рядом можно положить скрипты, шаблоны и справочники.<br><br>Магия в <b>постепенном раскрытии</b>. В памяти постоянно висит только описание — пара строк. Полная инструкция подгружается, если Claude решил, что задача про этот навык. Дополнительные файлы читаются, только если реально понадобились. Поэтому можно держать десятки навыков без раздувания контекста.<br><br>Самое важное — <b>описание</b>. Именно по нему принимается решение, включать навык или нет. Пиши в нём не только что он делает, но и <b>когда применять</b>.',
+     code:'---\nname: post-for-channel\ndescription: Пишет пост для канала по правилам бренда.\n  Использовать, когда просят подготовить пост,\n  анонс или текст для публикации.\n---\n\n# Пост для канала\n\n## Тон\nЖивой, без канцелярита. Обращение на «ты».\n\n## Структура\n1. Крючок — одно предложение\n2. Суть — два-три абзаца\n3. Вывод с конкретным действием\n\n## Запрещено\nЭмодзи в заголовке. Слова «уникальный», «инновационный».\nВопросы в конце ради вовлечения.',
+     steps:[
+       'Опиши в description именно триггер: «использовать, когда…»',
+       'Начни с одного навыка под самую частую задачу',
+       'Длинные процедуры выноси из общих инструкций в навыки',
+       'Формат стал общим стандартом — тот же файл понимают и другие редакторы'],
+     warn:''},
+
+    {id:'mcp', lvl:'pro', tag:'[ПОДКЛЮЧЕНИЯ]', title:'MCP: дотянуться до внешних систем',
+     lead:'Открытый протокол, превращающий чат в сотрудника с доступами.',
+     body:'MCP — общий стандарт подключения. Сервер — это отдельная программа, которая даёт модели инструменты: прочитать базу, открыть пул-реквест, написать в мессенджер, поднять задачу в трекере.<br><br>Главный плюс — <b>независимость от модели</b>. Написал сервер один раз — он работает и с Claude, и с другими моделями. Менять модель можно, не переписывая интеграции.<br><br>Начинать стоит с готовых серверов: файлы, репозиторий, поиск. И ставить <b>по одному</b>: подключил, убедился, что вызывается правильно, только потом следующий. Двадцать серверов в первый день — гарантированная каша.<br><br>Про безопасность: у модели появляется право <b>действовать</b>, а не только советовать. Секреты передавай переменными окружения, а не вписывай в конфиг.',
+     steps:[
+       'Начни с одного сервера под реальную боль',
+       'Проверь, что инструменты вызываются с нужными параметрами',
+       'Секреты — только через переменные окружения',
+       'Если сервер вываливает гору данных — проси сузить запрос'],
+     warn:'Подключённые сторонние серверы работают по своим правилам. Проверяй, что именно они получают.'},
+
+    {id:'code', lvl:'pro', tag:'[РАЗРАБОТКА]', title:'Claude Code: агент в терминале',
+     lead:'Видит проект целиком, правит файлы, запускает тесты.',
+     body:'Не чат про код, а агент внутри проекта. Читает файловую систему, вносит правки в несколько файлов, гоняет команды и тесты.<br><br><b>Режим планирования</b> — главная привычка, которую стоит завести. По <code>Shift+Tab</code> модель сначала показывает план: какие файлы тронет и что сделает. Ничего не меняется, пока не одобришь. Правило: задача дольше десяти минут — сначала план.<br><br>Полезные команды: <code>/compact</code> сжимает разговор, <code>/rewind</code> откатывает к прошлой точке, <code>/context</code> показывает, чем забита память, <code>/cost</code> — расход, <code>/diff</code> — все изменения за сессию.<br><br>Файл <code>CLAUDE.md</code> в корне проекта — постоянные правила: структура, соглашения, что трогать нельзя. Он подгружается всегда, поэтому держи его коротким.',
+     code:'# CLAUDE.md\n\n## Стек\nNode 20, TypeScript, без новых зависимостей.\n\n## Правила\n- Тесты обязательны для каждой правки\n- Не трогать папку legacy/\n- Стиль кода как в существующих файлах\n- Перед «готово» прогнать тесты\n\n## Структура\nsrc/api — эндпоинты\nsrc/core — логика\ntests — тесты рядом с кодом',
+     steps:[
+       'Shift+Tab перед любой задачей крупнее опечатки',
+       'Ограничения проговаривай сразу, а не после плана',
+       'Постоянные правила — в CLAUDE.md, процедуры — в навыки',
+       'Читай план перед одобрением, иначе смысл теряется'],
+     warn:'Claude Code недоступен на бесплатном плане.'},
+
+    {id:'agents', lvl:'pro', tag:'[МАСШТАБ]', title:'Субагенты и хуки',
+     lead:'Параллельная работа и автоматика, которая срабатывает сама.',
+     body:'<b>Субагенты</b> — отдельные помощники со своей памятью. Главный агент раскладывает задачу и запускает их параллельно: один копает данные, другой проверяет код, третий собирает отчёт. Смысл не в скорости, а в <b>чистоте контекста</b>: шумный ресёрч не забивает основную сессию.<br><br><b>Хуки</b> — скрипты, срабатывающие на события: перед отправкой запроса, после правки файла, перед коммитом. Ими ставят ограждения — например, запрет коммитить файлы с ключами. Именно хуки позволяют оставить агента работать без присмотра.<br><br>Совет из практики: не блокируй правку в момент записи — дай закончить проход и проверяй результат. Блокировка посередине рвёт ход рассуждения и делает результат хуже.',
+     steps:[
+       'Субагенты — когда задача засорила бы основной контекст',
+       'Хуки — когда правило должно срабатывать всегда',
+       'Проверяй результат, а не блокируй процесс',
+       'Начни с одного хука-ограждения на опасные операции'],
+     warn:''}
+  ];
+
+  // Сравнение трёх механизмов — отдельным блоком в разделе.
+  const CLAUDE_TABLE = [
+    {k:'Проекты', q:'Что надо знать', when:'Контекст, который повторяется',
+     ex:'Бренд-гайд, документы клиента, примеры текстов', cost:'Загружается всегда'},
+    {k:'Навыки',  q:'Как это делать',  when:'Процедура, которую объясняешь заново',
+     ex:'Правила постов, чеклист ревью, формат отчёта', cost:'~100 токенов до вызова'},
+    {k:'MCP',     q:'Чем это сделать', when:'Нужен доступ к внешней системе',
+     ex:'Почта, база данных, репозиторий, трекер', cost:'Десятки тысяч токенов сразу'}
+  ];
+
   const CHANGELOG = [
+    {date:'27 июля 2026', tag:'[ДОБАВИЛ]', title:'Супер-раздел по Claude',
+     text:'14 разборов в трёх уровнях: от тарифов и доступа из России до <b>XML-промптов, Артефактов, Проектов, Skills, MCP и агента в терминале</b>. С примерами кода, которые копируются одной кнопкой.'},
     {date:'27 июля 2026', tag:'[ДОБАВИЛ]', title:'Разборы топ-моделей с приёмами',
      text:'По каждой ключевой модели — <b>за что берут, какие параметры решают и где обожжёшься</b>. Внутри реальная конкретика: <b>--sref</b> и <b>--cref</b> у Midjourney, 14 референсов у Nano Banana, реплики через двоеточие у Veo.'},
     {date:'27 июля 2026', tag:'[ДОБАВИЛ]', title:'Раздел «Приёмы»',
@@ -3925,7 +4287,7 @@
   // ── Дашборд: переключение экранов ───────────────────────────────────
   const navSaved=document.getElementById('navSaved');
   const navSavedN=document.getElementById('navSavedN');
-  const VIEWS=['home','top','skills','catalog','recipes','saved','pay','news'];
+  const VIEWS=['home','claude','top','skills','catalog','recipes','saved','pay','news'];
 
   function showView(name, push){
     if(!VIEWS.includes(name)) name='home';
@@ -4071,6 +4433,89 @@
         }, reduced()?0:340);
       });
     });
+  }
+
+  // ── Супер-раздел Claude ─────────────────────────────────────────────
+  function renderClaude(){
+    const box=document.getElementById('claudeLevels');
+    if(!box) return;
+    box.innerHTML='';
+    CLAUDE_LEVELS.forEach(l=>{
+      const cards=CLAUDE_CARDS.filter(c=>c.lvl===l.id);
+      const sec=document.createElement('section');
+      sec.className='lvl-sec';
+      sec.innerHTML='<div class="lvl-head"><span class="lvl-num">'+l.num+'</span><h3>'+l.title+'</h3></div>'+
+        '<p class="lvl-lead">'+l.lead+'</p>'+
+        '<div class="cl-grid">'+cards.map(c=>
+          '<button class="cl-card" type="button" data-cl="'+c.id+'">'+
+            '<div class="tag">'+c.tag+'</div><h4>'+c.title+'</h4><p>'+c.lead+'</p>'+
+          '</button>').join('')+'</div>';
+      box.appendChild(sec);
+    });
+    box.addEventListener('click',e=>{
+      const c=e.target.closest('.cl-card');
+      if(c) openClaudeCard(c.dataset.cl);
+    });
+
+    const cmp=document.getElementById('cmpGrid');
+    if(cmp){
+      cmp.innerHTML=CLAUDE_TABLE.map(t=>
+        '<div class="cmp-col"><h4>'+t.k+'</h4><p class="cmp-q">«'+t.q+'»</p>'+
+        '<div class="cmp-row"><span class="l">Когда брать</span><span class="v">'+t.when+'</span></div>'+
+        '<div class="cmp-row"><span class="l">Примеры</span><span class="v">'+t.ex+'</span></div>'+
+        '<div class="cmp-row"><span class="l">Цена контекста</span><span class="v">'+t.cost+'</span></div>'+
+        '</div>').join('');
+    }
+  }
+
+  function openClaudeCard(id){
+    const c=CLAUDE_CARDS.find(x=>x.id===id);
+    if(!c) return;
+    lastFocus=document.activeElement;
+    step=3;
+    wiz.hidden=false;
+    document.body.classList.add('locked');
+    requestAnimationFrame(()=>{ wiz.classList.add('open'); drawClaudeCard(c); });
+  }
+
+  function drawClaudeCard(c){
+    wizProg.style.width='100%';
+    wizStepN.textContent='Claude';
+    wizBack.hidden=true;
+    const s=document.createElement('div');
+    s.className='step';
+
+    let html='<div class="res-head">'+
+      '<div class="tag">'+c.tag+'</div>'+
+      '<h2 id="wizHeading">'+c.title+'</h2>'+
+      '<p>'+c.lead+'</p></div>'+
+      '<div class="branch cl-body"><p>'+c.body+'</p></div>';
+
+    if(c.code){
+      html+='<div class="branch">'+branchHead('prompt','Как это выглядит')+
+        '<div class="code-block"><pre id="clCode">'+
+        c.code.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre></div></div>';
+    }
+    if(c.steps && c.steps.length){
+      html+='<div class="branch">'+branchHead('tricks','Что делать на практике')+
+        '<ol class="step-list">'+c.steps.map(x=>'<li>'+x+'</li>').join('')+'</ol></div>';
+    }
+    if(c.warn){
+      html+='<div class="branch"><div class="warn-box">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6A2 2 0 0 0 22 18L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>'+
+        '<span>'+c.warn+'</span></div></div>';
+    }
+    html+='<div class="res-actions">'+
+      (c.code?'<button class="btn-solid" id="clCopy" type="button">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>'+
+        'Скопировать</button>':'')+
+      '<button class="btn-ghost" id="clClose" type="button">Закрыть</button></div>';
+
+    s.innerHTML=html;
+    mount(s);
+    const cp=s.querySelector('#clCopy');
+    if(cp) cp.addEventListener('click',()=>copyText(c.code));
+    s.querySelector('#clClose').addEventListener('click',closeWiz);
   }
 
   // ── Приёмы ──────────────────────────────────────────────────────────
@@ -4631,6 +5076,7 @@
     document.getElementById('statRec').textContent=RECIPES.length;
     document.getElementById('statTop').textContent=TOP_MODELS.length;
     document.getElementById('statSkill').textContent=SKILLS.length;
+    document.getElementById('statClaude').textContent=CLAUDE_CARDS.length;
   }
 
   initTheme();
@@ -4639,6 +5085,7 @@
   renderRecipes();
   renderRecPreview();
   renderNews();
+  renderClaude();
   renderTop();
   renderTop(document.getElementById('topPreview'), TOP_MODELS.filter(m=>m.tier==='S').slice(0,4));
   renderSkills();
