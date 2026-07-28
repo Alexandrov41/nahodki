@@ -443,7 +443,7 @@ h1[tabindex="-1"]:focus-visible,h2[tabindex="-1"]:focus-visible{outline:none;}
 .opener-art{
   position:relative;overflow:hidden;
   border:1px solid var(--line);
-  aspect-ratio:4.2/1;margin-bottom:clamp(18px,3vw,28px);
+  aspect-ratio:3/1;margin-bottom:clamp(18px,3vw,28px);
   background:var(--paper-2);
 }
 .opener-art img{width:100%;height:100%;object-fit:cover;}
@@ -1304,7 +1304,7 @@ html[data-theme="dark"] .chip[data-fam][aria-pressed="true"]{color:var(--paper);
   border-bottom:3px solid var(--accent);
 }
 @media(max-width:600px){
-  .opener-art{aspect-ratio:3.4/1;}
+  .opener-art{aspect-ratio:2.4/1;}
 }
 
 /* шаги связки красятся своим семейством — маршрут читается цветом */
