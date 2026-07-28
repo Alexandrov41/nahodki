@@ -13,8 +13,33 @@ const RETIRED = ['Sora','PlayHT','D-ID','Zapier','Notion AI Meeting Notes',
 
 const CHECKED = 'июль 2026';
 
-const ALL_CATS  = CATS.concat(CATS_NEW);
-const ALL_TOOLS = TOOLS.concat(TOOLS_NEW).filter(t => !RETIRED.includes(t.name));
+// Если data.js не дошёл, дальше идти незачем: показываем запасной
+// экран и выходим, пока модуль не упал на первом же обращении.
+const DATA_READY = (typeof CATS !== 'undefined' && typeof TOOLS !== 'undefined'
+  && typeof TOP_MODELS !== 'undefined' && typeof RECIPES !== 'undefined'
+  && typeof CLAUDE_CARDS !== 'undefined' && typeof SKILLS !== 'undefined');
+
+if(!DATA_READY){
+  const main = document.querySelector('main.sheet');
+  if(main){
+    main.innerHTML =
+      '<div class="fallback">'+
+        '<p class="fallback-kicker">Находки · журнал о нейросетях</p>'+
+        '<h1>Номер не раскрылся</h1>'+
+        '<p class="fallback-lead">Данные журнала не загрузились. Чаще всего помогает обновить '+
+        'страницу — файл мог не дойти из-за сети или кеша.</p>'+
+        '<div class="cta-row">'+
+          '<button class="btn btn-solid" type="button" id="fbReload">Обновить страницу</button>'+
+        '</div>'+
+      '</div>';
+    const rb = document.getElementById('fbReload');
+    if(rb) rb.addEventListener('click', () => location.reload());
+  }
+  return;
+}
+const ALL_CATS  = DATA_READY ? CATS.concat(CATS_NEW) : [];
+const ALL_TOOLS = DATA_READY
+  ? TOOLS.concat(TOOLS_NEW).filter(t => !RETIRED.includes(t.name)) : [];
 
 const keyOf  = t => t.cat + ':' + t.name;
 const metaOf = t => META[keyOf(t)] || {q:4,s:4,tasks:[]};
@@ -1807,7 +1832,31 @@ addEventListener('keydown', e => {
   if(e.key === 'Escape' && current !== 'home'){ showView('home', true); }
 });
 
+/* ── Запасной экран: если данные не пришли ────────────────── */
+function dataOk(){
+  return DATA_READY && ALL_CATS.length > 0 && ALL_TOOLS.length > 0;
+}
+function showFallback(err){
+  const main = document.querySelector('main.sheet');
+  if(!main) return;
+  main.innerHTML =
+    '<div class="fallback">'+
+      '<p class="fallback-kicker">Находки · журнал о нейросетях</p>'+
+      '<h1>Номер не раскрылся</h1>'+
+      '<p class="fallback-lead">Данные журнала не загрузились. Чаще всего помогает обновить страницу — '+
+      'файл мог не дойти из-за сети или кеша.</p>'+
+      '<div class="cta-row">'+
+        '<button class="btn btn-solid" type="button" id="fbReload2">Обновить страницу</button>'+
+      '</div>'+
+      (err ? '<p class="fallback-tech">'+esc(String(err).slice(0,120))+'</p>' : '')+
+    '</div>';
+  const rb = document.getElementById('fbReload2');
+  if(rb) rb.addEventListener('click', () => location.reload());
+}
+
 /* ---------- 24. Старт ---------- */
+if(!dataOk()){ showFallback('данные каталога недоступны'); }
+else try{
 renderCover();
 buildChips();
 renderClaude();
@@ -1821,5 +1870,9 @@ loadShelves();
 syncSavedUI();
 routeFromHash();
 observe(document);
+}catch(err){
+  console.error('Сбой при сборке номера:', err);
+  showFallback(err && err.message);
+}
 
 })();
