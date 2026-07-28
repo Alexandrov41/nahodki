@@ -872,9 +872,10 @@ h1[tabindex="-1"]:focus-visible,h2[tabindex="-1"]:focus-visible{outline:none;}
 .branch li b{color:var(--ink);}
 .linkrow{display:flex;flex-wrap:wrap;gap:8px;}
 .linkchip{
+  display:inline-flex;align-items:center;
   border:1px solid var(--line-strong);background:var(--card);
   border-radius:999px;cursor:pointer;
-  font-size:13.5px;color:var(--ink-soft);padding:8px 14px;min-height:40px;
+  font-size:13.5px;color:var(--ink-soft);padding:10px 15px;min-height:44px;
   transition:border-color .2s,color .2s;
 }
 .linkchip:hover{border-color:var(--ochre);color:var(--ink);}
@@ -1952,4 +1953,73 @@ html[data-theme="dark"] .cover h1 em{
 .dtext.cost{
   font-family:var(--mono);font-size:13.5px;
   color:var(--ink);letter-spacing:-.01em;
+}
+
+/* ============================================================
+   39. ОГЛАВЛЕНИЕ НА ПОЛЯХ
+   ============================================================ */
+.with-margin{
+  display:grid;
+  grid-template-columns:206px minmax(0,1fr);
+  gap:clamp(24px,4vw,52px);
+  align-items:start;
+}
+@media(max-width:1080px){
+  .with-margin{grid-template-columns:1fr;}
+  .margin-nav{display:none;}
+}
+.margin-nav{position:sticky;top:126px;max-height:calc(100vh - 160px);}
+.margin-in{
+  border-left:1px solid var(--line-strong);
+  padding-left:16px;
+  max-height:calc(100vh - 170px);
+  overflow-y:auto;scrollbar-width:thin;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14px,#000 calc(100% - 18px),transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 14px,#000 calc(100% - 18px),transparent 100%);
+}
+.margin-in::-webkit-scrollbar{width:3px;}
+.margin-in::-webkit-scrollbar-thumb{background:var(--line-strong);}
+.margin-lab{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-faint);
+  margin:0 0 12px;position:sticky;top:0;background:var(--paper);padding:2px 0 6px;
+}
+.margin-list{list-style:none;margin:0;padding:0;counter-reset:none;}
+.margin-list li{margin-bottom:2px;}
+.margin-list button{
+  display:grid;grid-template-columns:22px 1fr;gap:8px;
+  width:100%;text-align:left;background:none;border:0;cursor:pointer;
+  padding:6px 6px 6px 0;color:var(--ink-soft);
+  font-size:13px;line-height:1.32;
+  transition:color .2s,transform .2s var(--ease);
+}
+.margin-list .mn{
+  font-family:var(--mono);font-size:10px;color:var(--ink-faint);
+  padding-top:1px;
+}
+.margin-list button:hover{color:var(--ink);transform:translateX(2px);}
+.margin-list button[aria-current="true"]{color:var(--accent,var(--ochre-deep));}
+.margin-list button[aria-current="true"] .mn{color:var(--accent,var(--ochre));}
+.margin-list button[aria-current="true"] .mt{font-weight:500;}
+
+/* Время чтения в содержании: две строки + стрелка сбоку */
+.toc-row .folio{
+  display:grid;
+  grid-template-columns:auto auto;
+  grid-template-areas:"read arrow" "folio arrow";
+  column-gap:12px;row-gap:2px;
+  align-items:center;text-align:right;
+}
+.folio-read{
+  grid-area:read;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--accent,var(--ink-faint));opacity:.9;
+}
+.toc-row .folio .arrow{grid-area:arrow;align-self:center;}
+@media(max-width:600px){
+  .toc-row .folio{
+    grid-template-columns:auto auto auto;
+    grid-template-areas:"read folio arrow";
+    column-gap:10px;
+  }
 }

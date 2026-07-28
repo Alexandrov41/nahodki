@@ -399,6 +399,37 @@ addEventListener('scroll', () => {
 /* ---------- 10. Обложка ---------- */
 const uniqNames = list => new Set(list.map(t => t.name)).size;
 
+/* Время чтения: 900 знаков в минуту — спокойный темп для
+   журнального текста с разборами. */
+function readTime(chars){
+  const min = Math.max(2, Math.round(chars/900));
+  return min + ' ' + plural(min,'минута','минуты','минут');
+}
+function sectionChars(id){
+  const strip2 = x => String(x||'').replace(/<[^>]+>/g,'');
+  let n = 0;
+  if(id==='claude'){
+    CLAUDE_CARDS.forEach(c => n += strip2(c.body).length + strip2(c.lead).length +
+      (c.steps||[]).join(' ').length + strip2(c.warn).length);
+  } else if(id==='craft'){
+    SKILLS.forEach(k => n += strip2(k.body).length + strip2(k.lead).length + (k.steps||[]).join(' ').length);
+  } else if(id==='models'){
+    TOP_MODELS.forEach(m => n += strip2(m.power).length + strip2(m.lead).length +
+      (m.tricks||[]).join(' ').length + (m.traps||[]).join(' ').length + (m.prompt||'').length);
+  } else if(id==='recipes'){
+    RECIPES.forEach(r => n += strip2(r.lead).length + r.steps.map(x=>x.do).join(' ').length + 40);
+  } else if(id==='index'){
+    ALL_TOOLS.forEach(t => n += strip2(t.note).length + 30);
+  } else if(id==='showcase'){
+    SHOWCASE.forEach(w => n += w.task.length + w.how.length + w.catch.length + 60);
+  } else if(id==='fails'){
+    FAILS.forEach(f => n += f.what.length + f.went.length + strip2(f.lesson).length + f.now.length + 40);
+  } else if(id==='chron'){
+    CHANGELOG.forEach(c => n += strip2(c.text).length + c.title.length);
+  } else if(id==='pay'){ n = 1400; }
+  return n;
+}
+
 function renderCover(){
   const figs = [
     [uniqNames(ALL_TOOLS), 'находок'],
@@ -415,9 +446,12 @@ function renderCover(){
       (s.band?' data-peek="'+s.band+'"':'')+'>'+
       '<span class="num">'+s.n+'</span>'+
       '<span class="body"><h3>'+s.title+'</h3><p>'+s.lead+'</p></span>'+
-      '<span class="folio">'+s.folio+' <span class="arrow">→</span></span>'+
+      '<span class="folio"><span class="folio-read">'+readTime(sectionChars(s.id))+'</span>'+
+        s.folio+' <span class="arrow">→</span></span>'+
     '</button>').join('');
   wirePeek();
+  const tc = $('#tocCount');
+  if(tc) tc.textContent = SECTIONS.length + ' ' + plural(SECTIONS.length,'раздел','раздела','разделов');
 
   // Легенда: шесть красок издания
   $('#legend').innerHTML = Object.values(FAMILY).map(f => {
@@ -823,6 +857,7 @@ function renderClaude(){
     CLAUDE_TABLE.map(r => '<tr><td>'+r.k+'</td><td>'+r.q+'</td><td>'+r.when+'</td><td>'+r.ex+'</td><td>'+r.cost+'</td></tr>').join('')+
     '</tbody></table></div></div>';
   observe(box);
+  buildMargin('claudeMargin', CLAUDE_CARDS.map(c=>({id:c.id,title:c.title})), 'cl');
 }
 
 function chapterHTML(c, ns){
@@ -840,6 +875,47 @@ function chapterHTML(c, ns){
   '</div>';
 }
 
+/* ── Оглавление на полях: липкий список глав ────────────────
+   Для длинных разделов. Отмечает текущую главу при прокрутке,
+   на узких экранах не показывается. */
+function buildMargin(hostId, items, ns){
+  const host = document.getElementById(hostId);
+  if(!host) return;
+  host.innerHTML = '<div class="margin-in">'+
+    '<p class="margin-lab">Главы</p>'+
+    '<ol class="margin-list">'+
+    items.map((it,i) =>
+      '<li><button type="button" data-margin="'+ns+'-'+it.id+'">'+
+      '<span class="mn">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<span class="mt">'+esc(it.title)+'</span></button></li>').join('')+
+    '</ol></div>';
+
+  host.addEventListener('click', e => {
+    const b = e.target.closest('[data-margin]');
+    if(!b) return;
+    const target = document.querySelector('[data-ch="'+b.dataset.margin+'"]');
+    if(!target) return;
+    if(target.getAttribute('aria-expanded') === 'false') target.click();
+    target.scrollIntoView({block:'center', behavior: reduced()?'auto':'smooth'});
+    target.focus({preventScroll:true});
+  });
+
+  // подсветка текущей главы
+  if(!('IntersectionObserver' in window)) return;
+  const marks = host.querySelectorAll('[data-margin]');
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(!en.isIntersecting) return;
+      const id = en.target.dataset.ch;
+      marks.forEach(m => m.setAttribute('aria-current', m.dataset.margin === id ? 'true' : 'false'));
+    });
+  }, {rootMargin:'-120px 0px -70% 0px', threshold:0});
+  items.forEach(it => {
+    const el = document.querySelector('[data-ch="'+ns+'-'+it.id+'"]');
+    if(el) spy.observe(el);
+  });
+}
+
 /* ---------- 14. Приёмы ---------- */
 function renderCraft(){
   const box = $('#craftBody');
@@ -849,6 +925,7 @@ function renderCraft(){
       body:s.body, steps:s.steps, warn:''
     },'sk')).join('') + '</div>';
   observe(box);
+  buildMargin('craftMargin', SKILLS.map(s=>({id:s.id,title:s.title})), 'sk');
 }
 
 /* ---------- 15. Портреты моделей ---------- */

@@ -124,7 +124,7 @@
   <section class="band" aria-labelledby="tocTitle">
     <div class="band-head">
       <h2 id="tocTitle">Содержание</h2>
-      <span class="side">семь разделов</span>
+      <span class="side" id="tocCount">разделов</span>
     </div>
     <div class="toc" id="toc"></div>
   </section>
@@ -256,7 +256,10 @@
 
   <div class="pullquote">Claude сам по себе не рисует. Но через коннектор он управляет тремя десятками моделей прямо из чата — и это меняет всё.</div>
 
-  <div id="claudeBody"></div>
+  <div class="with-margin">
+    <aside class="margin-nav" id="claudeMargin" aria-label="Оглавление раздела"></aside>
+    <div id="claudeBody"></div>
+  </div>
 
   <div class="next-slot" id="next-claude"></div>
 </section>
@@ -295,7 +298,10 @@
     <h2 id="crTitle">Ремесло</h2>
     <p class="lead">Восемь приёмов, которые работают с любой моделью. Они дают больше, чем смена инструмента: тот же сервис начинает выдавать другой результат.</p>
   </div>
-  <div id="craftBody"></div>
+  <div class="with-margin">
+    <aside class="margin-nav" id="craftMargin" aria-label="Оглавление раздела"></aside>
+    <div id="craftBody"></div>
+  </div>
 
   <div class="next-slot" id="next-craft"></div>
 </section>
