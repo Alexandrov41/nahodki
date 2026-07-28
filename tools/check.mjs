@@ -70,6 +70,13 @@ noKit.length ? bad('без шпаргалки: ' + noKit.map(c=>c.label).join(',
 const badAccess = all.filter(t => !d.ACCESS_HINT[t.access]);
 badAccess.length ? bad('незнакомый доступ: ' + badAccess.map(t=>t.name).join(', ')) : ok('пометки доступа корректны');
 
+console.log('\nСТОИМОСТЬ И СТАТУСЫ');
+const costKeys = [...appSrc.matchAll(/^\s{2}'([^']+)':'[^']*'/gm)]
+  .map(m => m[1]).filter(k => k.includes(':'));
+const badCost = [...new Set(costKeys.filter(k => !keys.has(k)))];
+badCost.length ? bad('ключ не из каталога: ' + badCost.join(', '))
+               : ok('все ключи стоимости и статусов ведут на живые находки');
+
 console.log('\nСЕТКИ');
 const grid = (n, label, cols) => {
   const bads = cols.filter(c => n % c !== 0 && n > c);
