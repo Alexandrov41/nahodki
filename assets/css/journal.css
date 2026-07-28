@@ -1095,8 +1095,19 @@ h1[tabindex="-1"]:focus-visible,h2[tabindex="-1"]:focus-visible{outline:none;}
 }
 .cmp td:first-child{font-family:var(--serif);font-size:17px;color:var(--ink);}
 .cmp td{color:var(--ink-soft);}
-.cmp-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.cmp-scroll table{min-width:560px;}
+.cmp-scroll{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  max-width:100%;width:100%;
+  /* без contain строки таблицы всё равно растягивают документ */
+  contain:paint;
+  /* подсказка, что таблица прокручивается вбок */
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent 100%);
+}
+.cmp-scroll > table{min-width:560px;}
+/* таблица сравнения внутри модального окна ведёт себя иначе */
+.cmp-in .cmp-scroll{mask-image:none;-webkit-mask-image:none;}
+.cmp-in .cmp-scroll > table{min-width:0;}
 
 /* ---------- 22. Мелочи ---------- */
 .hint{
@@ -1762,7 +1773,8 @@ html[data-theme="dark"] .cover h1 em{
 .chips{padding-right:8px;}
 
 /* Заголовок раздела не подлезает под липкую шапку при переходе */
-.view{scroll-margin-top:120px;}
+.view{scroll-margin-top:120px;min-width:0;}
+.view > *,.with-margin > *{min-width:0;}
 
 /* Тонкая линия набора: колонки манифеста дышат ровнее */
 .mf{display:flex;flex-direction:column;}
@@ -1959,6 +1971,7 @@ html[data-theme="dark"] .cover h1 em{
    39. ОГЛАВЛЕНИЕ НА ПОЛЯХ
    ============================================================ */
 .with-margin{
+  min-width:0;
   display:grid;
   grid-template-columns:206px minmax(0,1fr);
   gap:clamp(24px,4vw,52px);
