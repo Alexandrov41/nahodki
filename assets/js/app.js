@@ -1074,6 +1074,7 @@ function renderClaude(){
     '</tbody></table></div></div>';
   observe(box);
   buildMargin('claudeMargin', CLAUDE_CARDS.map(c=>({id:c.id,title:c.title})), 'cl');
+
 }
 
 function chapterHTML(c, ns){
@@ -1089,6 +1090,52 @@ function chapterHTML(c, ns){
       (c.warn ? '<div class="warn">'+ICO.warn+'<span>'+c.warn+'</span></div>' : '')+
     '</div></div></div>'+
   '</div>';
+}
+
+/* ── Крошки: контекст чтения в липкой шапке ─────────────────
+   В длинных разделах при прокрутке теряется, где ты. Строка
+   показывает раздел и текущую главу, появляется только когда
+   заголовок раздела ушёл вверх. */
+let crumbSpy = null;
+function setupCrumbs(viewId, sectionTitle, chapterSel, levelOf){
+  const bar = $('#crumbs');
+  if(!bar) return;
+  const view = document.getElementById('view-' + viewId);
+  if(!view) return;
+
+  const opener = view.querySelector('.opener h2');
+  const label = $('#crumbSection');
+  const chap  = $('#crumbChapter');
+  label.textContent = sectionTitle;
+  chap.textContent = '';
+  bar.setAttribute('data-fam', view.getAttribute('data-fam') || '');
+
+  if(crumbSpy){ crumbSpy.disconnect(); crumbSpy = null; }
+  if(!('IntersectionObserver' in window)) return;
+
+  // показываем строку, когда заголовок раздела ушёл за верх
+  const head = new IntersectionObserver(([e]) => {
+    bar.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0);
+  }, {rootMargin:'-110px 0px 0px 0px', threshold:0});
+  if(opener) head.observe(opener);
+
+  // отмечаем текущую главу
+  crumbSpy = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(!en.isIntersecting) return;
+      const t = en.target.querySelector('h4');
+      chap.textContent = t ? t.textContent : '';
+      const lvl = levelOf ? levelOf(en.target) : '';
+      const lv = $('#crumbLevel');
+      if(lv) lv.textContent = lvl || '';
+    });
+  }, {rootMargin:'-120px 0px -72% 0px', threshold:0});
+  view.querySelectorAll(chapterSel).forEach(el => crumbSpy.observe(el));
+}
+function clearCrumbs(){
+  const bar = $('#crumbs');
+  if(bar) bar.classList.remove('on');
+  if(crumbSpy){ crumbSpy.disconnect(); crumbSpy = null; }
 }
 
 /* ── Оглавление на полях: липкий список глав ────────────────
@@ -1142,6 +1189,7 @@ function renderCraft(){
     },'sk')).join('') + '</div>';
   observe(box);
   buildMargin('craftMargin', SKILLS.map(s=>({id:s.id,title:s.title})), 'sk');
+
 }
 
 /* ---------- 15. Портреты моделей ---------- */
@@ -1404,6 +1452,30 @@ function renderNext(){
   });
 }
 
+/* ── Скелетоны: заполнитель на время сборки раздела ─────────
+   Разделы строятся мгновенно, но на медленном устройстве
+   пользователь успевает увидеть пустоту. Показываем каркас. */
+function skeleton(kind){
+  const bar = (w) => '<span class="sk-bar" style="width:'+w+'%"></span>';
+  if(kind === 'cards')
+    return '<div class="sk-cards">' + Array.from({length:6}, () =>
+      '<div class="sk-card"><span class="sk-plate"></span>'+bar(46)+bar(88)+bar(64)+'</div>').join('') + '</div>';
+  if(kind === 'rows')
+    return '<div class="sk-rows">' + Array.from({length:7}, () =>
+      '<div class="sk-row"><span class="sk-num"></span><span class="sk-lines">'+bar(34)+bar(82)+'</span></div>').join('') + '</div>';
+  return '<div class="sk-rows">' + Array.from({length:5}, () =>
+    '<div class="sk-row"><span class="sk-lines">'+bar(40)+bar(76)+'</span></div>').join('') + '</div>';
+}
+
+/* Отрисовка с заполнителем: если построение занимает больше
+   кадра, пользователь видит каркас, а не пустое место. */
+function paint(hostSel, kind, build){
+  const host = typeof hostSel === 'string' ? $(hostSel) : hostSel;
+  if(!host) return;
+  if(!host.children.length) host.innerHTML = skeleton(kind);
+  requestAnimationFrame(() => { try{ build(); }catch(e){ console.error(e); } });
+}
+
 /* ---------- 19. Навигация ---------- */
 let current = 'home';
 
@@ -1420,6 +1492,15 @@ function showView(name, push){
   });
   $$('.rlink').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'true' : 'false'));
 
+  if(name === 'claude'){
+    setupCrumbs('claude', 'Claude: полный разбор', '.chapter', el => {
+      const lvl = el.closest('.lvl');
+      const h = lvl && lvl.querySelector('.lvl-head h3');
+      return h ? h.textContent : '';
+    });
+  } else if(name === 'craft'){
+    setupCrumbs('craft', 'Ремесло', '.chapter', () => '');
+  } else clearCrumbs();
   const sec = SECTIONS.find(x => x.id === name);
   if(sec && sec.fam && name !== 'index'){
     const el = document.getElementById('view-'+name);
@@ -1431,13 +1512,13 @@ function showView(name, push){
     else if(active !== 'all') el.setAttribute('data-fam', famOf(active));
     else el.setAttribute('data-fam','image');
   }
-  if(name === 'index')   renderIndex();
+  if(name === 'index')   paint('#idxBody','rows',renderIndex);
   if(name === 'saved')   renderSaved();
-  if(name === 'models'){ if($('#modelArticle').hidden) renderModels(); }
+  if(name === 'models'){ if($('#modelArticle').hidden) paint('#modelsGrid','cards',renderModels); }
   if(name === 'chron')   renderChron();
-  if(name === 'showcase') renderShowcase();
+  if(name === 'showcase') paint('#showcaseGrid','rows',renderShowcase);
   if(name === 'fails')   renderFails();
-  if(name === 'map')     renderMap();
+  if(name === 'map')     paint('#mapBody','rows',renderMap);
 
   if(push !== false){
     const h = name === 'home' ? ' ' : '#/'+name;
