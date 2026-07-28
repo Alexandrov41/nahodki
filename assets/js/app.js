@@ -93,6 +93,7 @@ const ICO = {
   sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2 12h2.4M19.6 12H22M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>',
   moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/></svg>',
   spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.3L19 10l-5.1 1.7L12 17l-1.9-5.3L5 10l5.1-1.7z"/><path d="M18 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>',
+  scales:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M7 8h10"/><path d="M4 13l3-6 3 6a3 3 0 0 1-6 0z"/><path d="M14 13l3-6 3 6a3 3 0 0 1-6 0z"/></svg>',
   cmd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3z"/></svg>'
 };
 
@@ -186,6 +187,25 @@ function toggleSave(k){
   else { saved.add(k); toast('Сохранил в закладки'); }
   persist(); syncSavedUI();
   if(current === 'saved') renderSaved();
+}
+
+/* Фон не прокручивается, пока открыто модальное окно. */
+let scrollLockY = 0, scrollLocked = false;
+function lockScroll(on){
+  if(on === scrollLocked) return;
+  scrollLocked = on;
+  const body = document.body;
+  if(on){
+    scrollLockY = window.scrollY;
+    body.style.position = 'fixed';
+    body.style.top = -scrollLockY + 'px';
+    body.style.left = '0'; body.style.right = '0';
+    body.style.overflow = 'hidden';
+  } else {
+    body.style.position = ''; body.style.top = '';
+    body.style.left = ''; body.style.right = ''; body.style.overflow = '';
+    window.scrollTo(0, scrollLockY);
+  }
 }
 
 /* ---------- 7. Тост ---------- */
@@ -401,7 +421,11 @@ function detailHTML(t, uid){
     '<p class="dl">Как получить доступ</p>'+
     '<p class="dtext"><b>'+esc(t.access)+'.</b> '+(ACCESS_HINT[t.access]||'')+'</p>'+
     (FREE_LIMITS[k] ? '<div class="limit">'+ICO.info+'<span>'+FREE_LIMITS[k]+'</span></div>' : '')+
-    (u ? '<a class="go" href="https://'+u+'" target="_blank" rel="noopener noreferrer">Открыть сайт '+ICO.arrow+'</a>' : '')+
+    '<span class="detail-acts">'+
+      (u ? '<a class="go" href="https://'+u+'" target="_blank" rel="noopener noreferrer">Открыть сайт '+ICO.arrow+'</a>' : '')+
+      '<button class="ghost-act" type="button" data-cmp="'+esc(k)+'" aria-pressed="false" aria-label="Сравнить">'+ICO.scales+' Сравнить</button>'+
+      '<button class="ghost-act" type="button" data-save="'+esc(k)+'" aria-pressed="false" aria-label="В закладки">'+ICO.bookmark+' В закладки</button>'+
+    '</span>'+
     '<p class="checked">Сверено: '+CHECKED+'. Сервисы меняют лимиты — проверь перед оплатой.</p>'+
   '</div></div></div>';
 }
@@ -420,7 +444,10 @@ function toolCard(t, i){
   const k = keyOf(t), uid = 'c-'+k.replace(/[^a-zA-Zа-яА-Я0-9]/g,'-')+'-'+i;
   return '<div class="tcard-wrap" data-fam="'+famOf(t.cat)+'">'+
     '<div class="tcard rise" role="button" tabindex="0" data-open="'+esc(k)+'" aria-expanded="false" aria-controls="'+uid+'">'+
-      '<button class="save-btn" type="button" data-save="'+esc(k)+'" aria-pressed="false" aria-label="В закладки">'+ICO.bookmark+'</button>'+
+      '<span class="card-tools">'+
+        '<button class="save-btn" type="button" data-save="'+esc(k)+'" aria-pressed="false" aria-label="В закладки">'+ICO.bookmark+'</button>'+
+        '<button class="save-btn cmp-btn" type="button" data-cmp="'+esc(k)+'" aria-pressed="false" aria-label="Сравнить">'+ICO.scales+'</button>'+
+      '</span>'+
       '<span class="tag">'+esc(t.catLabel)+'</span>'+
       '<h4>'+esc(t.name)+'</h4>'+
       '<p>'+t.note+'</p>'+
@@ -481,7 +508,7 @@ function renderIndex(){
   }
 
   body.innerHTML = html;
-  syncSavedUI();
+  syncSavedUI(); syncCompareUI();
   observe(body);
 }
 
@@ -490,6 +517,9 @@ function wireOpen(root){
   root.addEventListener('click', e => {
     const save = e.target.closest('[data-save]');
     if(save){ e.stopPropagation(); toggleSave(save.dataset.save); return; }
+
+    const cmpb = e.target.closest('[data-cmp]');
+    if(cmpb){ e.stopPropagation(); toggleCompare(cmpb.dataset.cmp); return; }
 
     const exp = e.target.closest('[data-expand]');
     if(exp){
@@ -512,6 +542,96 @@ function wireOpen(root){
     if(!c) return;
     e.preventDefault(); c.click();
   });
+}
+
+/* ============================================================
+   СРАВНЕНИЕ: две находки бок о бок
+   Закрывает вопрос «а чем этот отличается от того».
+   ============================================================ */
+let compare = [];
+let cmpDismissed = false;
+
+function toggleCompare(k){
+  const i = compare.indexOf(k);
+  if(i > -1) compare.splice(i,1);
+  else {
+    if(compare.length >= 2) compare.shift();
+    compare.push(k);
+  }
+  syncCompareUI();
+  // Окно само раскрывается, когда пара собрана впервые. Если его закрыли —
+  // больше не навязываемся: остаётся плашка с кнопкой «Показать».
+  if(compare.length === 2 && !cmpDismissed) openCompare();
+}
+
+function syncCompareUI(){
+  $$('[data-cmp]').forEach(b => {
+    const on = compare.indexOf(b.dataset.cmp) > -1;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('aria-label', on ? 'Убрать из сравнения' : 'Сравнить');
+  });
+  const bar = $('#cmpBar');
+  if(!bar) return;
+  if(!compare.length){ bar.classList.remove('on'); bar.innerHTML=''; return; }
+  const names = compare.map(k => { const t = toolByKey(k); return t ? t.name : k; });
+  bar.classList.add('on');
+  bar.innerHTML =
+    '<span class="cmp-lab">Сравнение</span>'+
+    '<span class="cmp-names">'+names.map(esc).join(' <i>·</i> ')+'</span>'+
+    (compare.length === 2
+      ? '<button class="cmp-go" type="button" data-cmp-open>Показать →</button>'
+      : '<span class="cmp-hint">выбери ещё одну</span>')+
+    '<button class="cmp-clear" type="button" data-cmp-clear aria-label="Очистить сравнение">'+ICO.close+'</button>';
+}
+
+function cmpRow(label, a, b, mono){
+  return '<tr><th scope="row">'+esc(label)+'</th>'+
+    '<td'+(mono?' class="m"':'')+'>'+a+'</td>'+
+    '<td'+(mono?' class="m"':'')+'>'+b+'</td></tr>';
+}
+
+function openCompare(){
+  if(compare.length !== 2) return;
+  const [a,b] = compare.map(toolByKey);
+  if(!a || !b) return;
+  const ma = metaOf(a), mb = metaOf(b);
+  const dlg = $('#cmp');
+  const stars = n => '●'.repeat(n) + '<span class="dim">' + '●'.repeat(5-n) + '</span>';
+
+  $('#cmpBody').innerHTML =
+    '<div class="cmp-head">'+
+      '<div class="cmp-side" data-fam="'+famOf(a.cat)+'"><span class="cmp-cat">'+esc(a.catLabel)+'</span><h3>'+esc(a.name)+'</h3></div>'+
+      '<span class="cmp-vs">против</span>'+
+      '<div class="cmp-side" data-fam="'+famOf(b.cat)+'"><span class="cmp-cat">'+esc(b.catLabel)+'</span><h3>'+esc(b.name)+'</h3></div>'+
+    '</div>'+
+    '<div class="cmp-scroll"><table class="cmp-table">'+
+      cmpRow('Чем берёт', '<p>'+a.note+'</p>', '<p>'+b.note+'</p>')+
+      cmpRow('Качество результата', stars(ma.q||4), stars(mb.q||4), true)+
+      cmpRow('Скорость и простота', stars(ma.s||4), stars(mb.s||4), true)+
+      cmpRow('Доступ', esc(a.access), esc(b.access))+
+      cmpRow('Бесплатный тариф',
+        FREE_LIMITS[keyOf(a)] || '<span class="dim">нет данных</span>',
+        FREE_LIMITS[keyOf(b)] || '<span class="dim">нет данных</span>')+
+      cmpRow('Задачи',
+        (ma.tasks||[]).slice(0,4).map(x=>'<span class="tk">'+esc(x)+'</span>').join('') || '<span class="dim">—</span>',
+        (mb.tasks||[]).slice(0,4).map(x=>'<span class="tk">'+esc(x)+'</span>').join('') || '<span class="dim">—</span>')+
+      cmpRow('Сайт',
+        urlOf(a)?'<a class="go" href="https://'+urlOf(a)+'" target="_blank" rel="noopener noreferrer">'+urlOf(a)+'</a>':'<span class="dim">—</span>',
+        urlOf(b)?'<a class="go" href="https://'+urlOf(b)+'" target="_blank" rel="noopener noreferrer">'+urlOf(b)+'</a>':'<span class="dim">—</span>')+
+    '</table></div>'+
+    '<p class="cmp-note">Оценки — мои рабочие впечатления, не замеры. Сверено: '+CHECKED+'.</p>';
+
+  dlg.hidden = false;
+  lockScroll(true);
+  cmpLastFocus = document.activeElement;
+  requestAnimationFrame(() => { const c = $('#cmpClose'); if(c) c.focus(); });
+}
+let cmpLastFocus = null;
+function closeCompare(){
+  cmpDismissed = true;
+  lockScroll(false);
+  $('#cmp').hidden = true;
+  if(cmpLastFocus && cmpLastFocus.focus) cmpLastFocus.focus();
 }
 
 /* ---------- 12. Закладки ---------- */
@@ -829,6 +949,10 @@ document.addEventListener('click', e => {
     return;
   }
 
+  if(e.target.closest('[data-cmp-open]')){ openCompare(); return; }
+  if(e.target.closest('[data-cmp-clear]')){ compare = []; cmpDismissed = false; syncCompareUI(); return; }
+  if(e.target.closest('[data-cmp-close]')){ closeCompare(); return; }
+
   const cp = e.target.closest('[data-copy]');
   if(cp){
     const txt = cp.dataset.copy;
@@ -946,12 +1070,14 @@ function palRun(){
 }
 function openPal(){
   palLastFocus = document.activeElement;
+  lockScroll(true);
   pal.hidden = false;
   palInput.value = '';
   palRender('');
   requestAnimationFrame(() => palInput.focus());
 }
 function closePal(){
+  lockScroll(false);
   pal.hidden = true;
   if(palLastFocus && palLastFocus.focus) palLastFocus.focus();
 }
@@ -967,6 +1093,7 @@ palList.addEventListener('click', e => {
 });
 pal.addEventListener('click', e => { if(e.target === pal) closePal(); });
 $('#palBtn').addEventListener('click', openPal);
+$('#cmp').addEventListener('click', e => { if(e.target.id === 'cmp') closeCompare(); });
 
 /* ---------- 22. Мастер подбора ---------- */
 const wiz = $('#wiz'), wizBody = $('#wizBody'), wizProg = $('#wizProg'),
@@ -985,11 +1112,13 @@ const PRIORITIES = [
 
 function openWiz(){
   wizLastFocus = document.activeElement;
+  lockScroll(true);
   step = 0; answers = {cat:null,budget:null,priority:null};
   wiz.hidden = false;
   drawWiz();
 }
 function closeWiz(){
+  lockScroll(false);
   wiz.hidden = true;
   if(wizLastFocus && wizLastFocus.focus) wizLastFocus.focus();
 }
@@ -1085,6 +1214,12 @@ function trap(e, box){
 
 /* ---------- 23. Клавиатура ---------- */
 addEventListener('keydown', e => {
+  const cmpDlg = $('#cmp');
+  if(cmpDlg && !cmpDlg.hidden){
+    if(e.key === 'Escape'){ e.preventDefault(); closeCompare(); return; }
+    trap(e, $('.cmp-in'));
+    return;
+  }
   if(!pal.hidden){
     if(e.key === 'Escape'){ e.preventDefault(); closePal(); return; }
     trap(e, $('.pal-in'));

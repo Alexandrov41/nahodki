@@ -437,6 +437,20 @@
 
 <div class="peek" id="peek" aria-hidden="true"></div>
 
+<div class="cmp-bar" id="cmpBar"></div>
+
+<div class="cmp" id="cmp" role="dialog" aria-modal="true" aria-labelledby="cmpTitle" hidden>
+  <div class="cmp-in">
+    <div class="cmp-top">
+      <span class="cmp-kicker" id="cmpTitle">Две находки бок о бок</span>
+      <button class="icon-btn" id="cmpClose" type="button" data-cmp-close aria-label="Закрыть сравнение" style="width:38px;height:38px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="cmpBody"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/js/data.js"></script>
