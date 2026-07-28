@@ -244,11 +244,13 @@ function renderCover(){
     '<div class="fig"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>').join('');
 
   $('#toc').innerHTML = SECTIONS.map(s =>
-    '<button class="toc-row rise" type="button" data-go="'+s.id+'" data-fam="'+s.fam+'">'+
+    '<button class="toc-row rise" type="button" data-go="'+s.id+'" data-fam="'+s.fam+'"'+
+      (s.band?' data-peek="'+s.band+'"':'')+'>'+
       '<span class="num">'+s.n+'</span>'+
       '<span class="body"><h3>'+s.title+'</h3><p>'+s.lead+'</p></span>'+
       '<span class="folio">'+s.folio+' <span class="arrow">→</span></span>'+
     '</button>').join('');
+  wirePeek();
 
   // Легенда: шесть красок издания
   $('#legend').innerHTML = Object.values(FAMILY).map(f => {
@@ -271,6 +273,65 @@ function renderCover(){
 
   renderPulse();
   observe($('#view-home'));
+}
+
+/* ── Превью разворота: миниатюра арта следует за курсором ── */
+function wirePeek(){
+  const peek = $('#peek');
+  if(!peek || matchMedia('(hover: none)').matches || reduced()) return;
+  let raf = null, tx = 0, ty = 0;
+
+  $$('[data-peek]').forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      const band = row.dataset.peek;
+      peek.innerHTML = '<picture><source srcset="art/'+band+'.webp" type="image/webp">'+
+        '<img src="art/'+band+'.jpg" alt=""></picture>';
+      peek.setAttribute('data-fam', row.dataset.fam || '');
+      peek.classList.add('on');
+      corridor = measure(row);
+      requestAnimationFrame(place);
+    });
+    row.addEventListener('mouseleave', () => peek.classList.remove('on'));
+  });
+
+  // Превью встаёт в пустой коридор строки — между лидом и фолиантом,
+  // поэтому никогда не перекрывает текст.
+  let corridor = null;
+  function measure(row){
+    const body = row.querySelector('.body');
+    const folio = row.querySelector('.folio');
+    if(!body || !folio) return null;
+    const b = body.getBoundingClientRect(), f = folio.getBoundingClientRect();
+    // правый край реального текста внутри .body
+    let textRight = b.left;
+    body.querySelectorAll('h3,p').forEach(n => {
+      const r = n.getBoundingClientRect();
+      const probe = document.createRange();
+      probe.selectNodeContents(n);
+      const rr = probe.getBoundingClientRect();
+      textRight = Math.max(textRight, (rr.width ? rr.right : r.right));
+    });
+    const rowBox = row.getBoundingClientRect();
+    return {from:textRight + 32, to:f.left - 24, mid:rowBox.top + rowBox.height/2};
+  }
+
+  // Превью центрируется по своей строке: по вертикали не выходит за неё,
+  // по горизонтали стоит в пустом коридоре до фолианта.
+  function place(){
+    if(!corridor) return;
+    const w = peek.offsetWidth, h = peek.offsetHeight;
+    const space = corridor.to - corridor.from;
+    let x = space >= w ? corridor.from + (space - w)/2 : corridor.to - w;
+    x = Math.max(16, Math.min(x, innerWidth - w - 16));
+    let y = corridor.mid - h/2;
+    y = Math.max(84, Math.min(y, innerHeight - h - 20));
+    peek.style.transform = 'translate('+Math.round(x)+'px,'+Math.round(y)+'px)';
+  }
+  addEventListener('scroll', () => { if(peek.classList.contains('on')) place(); }, {passive:true});
+
+  $$('[data-peek]').forEach(row => {
+    row.addEventListener('mouseenter', () => { corridor = measure(row); place(); });
+  });
 }
 
 /* ── Пульс каталога: живая статистика вместо голых цифр ── */
@@ -551,7 +612,7 @@ function openModel(id){
       '<p class="lead">'+esc(m.lead)+'</p>'+
     '</div>'+
     '<div class="article">'+
-      '<div class="branch">'+branchHead('За что берут','power')+'<p style="font-size:15.5px;color:var(--ink-soft);margin:0">'+m.power+'</p></div>'+
+      '<div class="branch">'+branchHead('За что берут','power')+'<p style="font-size:15px;color:var(--ink-soft);margin:0">'+m.power+'</p></div>'+
       '<div class="branch">'+branchHead('Приёмы','tricks')+'<ul>'+m.tricks.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>'+
       '<div class="branch">'+branchHead('Грабли','traps')+'<ul>'+m.traps.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>'+
       '<div class="branch">'+branchHead('С чем связать','links')+'<div class="linkrow">'+
@@ -616,9 +677,26 @@ function renderKit(catId){
   box.innerHTML = '<div class="lvl-head" style="border-bottom-width:1px"><span class="n">✎</span><h3>'+esc(kit.title)+'</h3></div>'+
     snippet(kit.text, 'скелет запроса')+
     '<ul class="branch" style="margin-top:6px;list-style:none;padding:0">'+
-      kit.tips.map(t => '<li style="position:relative;padding:0 0 10px 18px;font-size:14.5px;color:var(--ink-soft)">'+
+      kit.tips.map(t => '<li style="position:relative;padding:0 0 10px 18px;font-size:15px;color:var(--ink-soft)">'+
       '<span style="position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--ochre);display:block"></span>'+t+'</li>').join('')+
     '</ul>';
+}
+
+/* ── Кода раздела: куда идти дальше ── */
+function renderNext(){
+  const order = SECTIONS.map(s => s.id);
+  order.forEach((id,i) => {
+    const host = document.getElementById('next-'+id);
+    if(!host) return;
+    const nx = SECTIONS[(i+1) % SECTIONS.length];
+    host.innerHTML =
+      '<button class="nextup" type="button" data-go="'+nx.id+'" data-fam="'+nx.fam+'">'+
+        '<span class="nextup-lab">Дальше в номере</span>'+
+        '<span class="nextup-t">'+esc(nx.title)+'</span>'+
+        '<span class="nextup-lead">'+esc(nx.lead)+'</span>'+
+        '<span class="nextup-go">'+nx.folio+' <i>→</i></span>'+
+      '</button>';
+  });
 }
 
 /* ---------- 19. Навигация ---------- */
@@ -968,8 +1046,8 @@ function drawResult(){
       const why = answers.priority === 'speed' ? m.whyS : m.whyQ;
       return '<div style="border-top:1px solid var(--line);padding:16px 0">'+
         '<div style="display:flex;align-items:baseline;gap:10px">'+
-        '<span style="font-family:var(--mono);font-size:11px;color:var(--ochre)">'+String(i+1).padStart(2,'0')+'</span>'+
-        '<b style="font-family:var(--serif);font-weight:400;font-size:21px">'+esc(t.name)+'</b></div>'+
+        '<span style="font-family:var(--mono);font-size:10.5px;color:var(--ochre)">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<b style="font-family:var(--serif);font-weight:400;font-size:20px">'+esc(t.name)+'</b></div>'+
         (why ? '<p class="res-why">'+esc(why)+'</p>' : '')+
         '<p style="font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:10px 0 0">'+esc(t.access)+'</p>'+
       '</div>';
@@ -1031,6 +1109,7 @@ buildChips();
 renderClaude();
 renderCraft();
 renderRecipes();
+renderNext();
 wireOpen($('#idxBody'));
 wireOpen($('#savedBody'));
 syncSavedUI();
