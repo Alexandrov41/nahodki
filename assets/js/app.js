@@ -434,6 +434,27 @@ function sectionChars(id){
   return n;
 }
 
+/* ── Живая обложка: печатная марка выпуска ─────────────────
+   Рисуется в SVG, поэтому меняется вместе с номером и не
+   требует новой картинки. Геометрия зависит от номера выпуска. */
+const ISSUE = {num:4, month:'июль', year:2026};
+
+function issueSeal(n){
+  const a = (n * 47) % 360;
+  const r2 = 26 + (n % 3) * 5;
+  return '<svg class="seal-art" viewBox="0 0 120 120" aria-hidden="true">'+
+    '<defs><path id="sealPath" d="M60,60 m-42,0 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0"/></defs>'+
+    '<circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="1" opacity=".35"/>'+
+    '<circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" stroke-width="1.5"/>'+
+    '<g transform="rotate('+a+' 60 60)">'+
+      '<circle cx="60" cy="60" r="'+r2+'" fill="currentColor" opacity=".14"/>'+
+      '<path d="M60 '+(60-r2)+' A '+r2+' '+r2+' 0 0 1 60 '+(60+r2)+' Z" fill="currentColor" opacity=".5"/>'+
+    '</g>'+
+    '<text class="seal-t" x="60" y="55" text-anchor="middle">№'+n+'</text>'+
+    '<text class="seal-s" x="60" y="72" text-anchor="middle">ВЫПУСК</text>'+
+  '</svg>';
+}
+
 function renderCover(){
   const figs = [
     [uniqNames(ALL_TOOLS), 'находок'],
@@ -476,6 +497,8 @@ function renderCover(){
     '</button>';
   }).join('');
 
+  const seal = $('#issueSeal');
+  if(seal) seal.innerHTML = issueSeal(ISSUE.num);
   renderPulse();
   observe($('#view-home'));
 }

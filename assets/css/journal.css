@@ -310,8 +310,8 @@ h1[tabindex="-1"]:focus-visible,h2[tabindex="-1"]:focus-visible{outline:none;}
 }
 .cover-art img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;}
 .cover-art .stamp{
-  position:absolute;right:-14px;bottom:-14px;
-  width:88px;height:88px;border-radius:50%;
+  position:absolute;right:-18px;bottom:-18px;
+  width:104px;height:104px;border-radius:50%;
   background:var(--wine);color:#F4EFE4;
   display:grid;place-items:center;text-align:center;
   font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
@@ -320,7 +320,7 @@ h1[tabindex="-1"]:focus-visible,h2[tabindex="-1"]:focus-visible{outline:none;}
 }
 @media(max-width:880px){
   .cover-art{max-width:340px;margin:0 auto;}
-  .cover-art .stamp{width:74px;height:74px;font-size:9px;right:-8px;bottom:-8px;}
+  .cover-art .stamp{width:82px;height:82px;right:-10px;bottom:-10px;}
 }
 
 .cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
@@ -2070,3 +2070,25 @@ html[data-theme="dark"] .cover h1 em{
 }
 .shelf-add:hover{border-color:var(--ochre);color:var(--ochre-deep);}
 .shelf-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+
+/* ============================================================
+   41. ПЕЧАТНАЯ МАРКА ВЫПУСКА
+   Рисуется в SVG: меняется вместе с номером, картинка не нужна.
+   ============================================================ */
+.cover-art .stamp{
+  background:var(--wine);color:#F4EFE4;
+  display:grid;place-items:center;padding:0;
+  overflow:hidden;
+}
+.seal-art{width:100%;height:100%;display:block;color:#F4EFE4;}
+.seal-t{
+  font-family:var(--serif);font-size:26px;fill:currentColor;
+}
+.seal-s{
+  font-family:var(--mono);font-size:9px;letter-spacing:.22em;
+  fill:currentColor;opacity:.8;
+}
+@media(max-width:880px){
+  .seal-t{font-size:30px;}
+  .seal-s{font-size:10px;}
+}
