@@ -1748,3 +1748,45 @@ html[data-theme="dark"] .cover h1 em{
 /* обложка не должна порождать горизонтальную прокрутку из-за печати */
 .cover-art{overflow:visible;}
 .cover-art picture{display:block;overflow:hidden;}
+
+/* ============================================================
+   35. ВИЗУАЛЬНЫЕ ДОВОДКИ
+   ============================================================ */
+
+/* Ленты с прокруткой показывают, что справа есть продолжение */
+.chips,.rubrics-in{
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 36px),transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 36px),transparent 100%);
+}
+.chips{padding-right:8px;}
+
+/* Заголовок раздела не подлезает под липкую шапку при переходе */
+.view{scroll-margin-top:120px;}
+
+/* Тонкая линия набора: колонки манифеста дышат ровнее */
+.mf{display:flex;flex-direction:column;}
+.mf p{margin-top:auto;}
+
+/* Раскрытая деталь получает подсветку своего семейства */
+.idx-item .detail.open,
+.tcard-wrap .detail.open{background:color-mix(in srgb,var(--accent) 4%,transparent);}
+
+/* Строка указателя при наведении сдвигает номер, а не весь блок */
+.idx-btn .mark{transition:transform .25s var(--ease);display:inline-block;}
+.idx-btn:hover .mark{transform:translateX(2px);}
+
+/* Карточка модели: подпись рубрики не наезжает на монограмму */
+.mplate-cat{max-width:calc(100% - 26px);}
+
+/* Кнопки-сегменты: активный получает краску раздела */
+#view-index[data-fam] .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);}
+
+/* Плашка сравнения не перекрывает подвал на коротких экранах */
+@media(max-height:560px){.cmp-bar{bottom:10px;}}
+
+/* Печать: раскрываем всё скрытое, убираем интерактив */
+@media print{
+  .detail{grid-template-rows:1fr !important;}
+  .nextup,.next-slot,.cmp-bar,.peek{display:none !important;}
+  .opener-art{max-height:120px;}
+}
