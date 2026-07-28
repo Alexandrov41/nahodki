@@ -2023,3 +2023,37 @@ html[data-theme="dark"] .cover h1 em{
     column-gap:10px;
   }
 }
+
+/* ============================================================
+   40. ПОЛКИ
+   ============================================================ */
+.shelf-bar{
+  display:flex;gap:6px;flex-wrap:wrap;align-items:center;
+  margin:0 0 clamp(18px,3vw,26px);
+  padding-bottom:14px;border-bottom:1px solid var(--line);
+}
+.shelf-tab{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--line-strong);background:var(--card);
+  border-radius:999px;cursor:pointer;
+  font-size:14px;color:var(--ink-soft);
+  padding:10px 16px;min-height:44px;
+  transition:border-color .2s,background .2s,color .2s;
+}
+.shelf-tab .sc{
+  font-family:var(--mono);font-size:10.5px;
+  color:var(--ink-faint);
+}
+.shelf-tab:hover{border-color:var(--ochre);color:var(--ink);}
+.shelf-tab[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.shelf-tab[aria-current="true"] .sc{color:color-mix(in srgb,var(--paper) 65%,transparent);}
+.shelf-add{
+  border:1px dashed var(--line-strong);background:none;
+  border-radius:999px;cursor:pointer;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-faint);
+  padding:11px 16px;min-height:44px;
+  transition:border-color .2s,color .2s;
+}
+.shelf-add:hover{border-color:var(--ochre);color:var(--ochre-deep);}
+.shelf-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}

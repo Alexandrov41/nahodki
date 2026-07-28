@@ -318,21 +318,25 @@ function persist(){
 function savedTools(){ return ALL_TOOLS.filter(t => saved.has(keyOf(t))); }
 
 function syncSavedUI(){
-  const n = saved.size;
+  const all = new Set();
+  Object.values(shelves).forEach(sh => sh.items.forEach(k => all.add(k)));
+  const n = all.size;
   const dot = $('#savedDot');
   dot.textContent = n;
   dot.hidden = n === 0;
   $$('[data-save]').forEach(b => {
-    const on = saved.has(b.dataset.save);
+    const on = all.has(b.dataset.save);
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
     b.setAttribute('aria-label', on ? 'Убрать из закладок' : 'В закладки');
   });
 }
 
 function toggleSave(k){
-  if(saved.has(k)){ saved.delete(k); toast('Убрал из закладок'); }
-  else { saved.add(k); toast('Сохранил в закладки'); }
-  persist(); syncSavedUI();
+  const sh = currentShelf();
+  const i = sh.items.indexOf(k);
+  if(i > -1){ sh.items.splice(i,1); saved.delete(k); toast('Убрал с полки «'+sh.name+'»'); }
+  else { sh.items.push(k); saved.add(k); toast('На полку «'+sh.name+'»'); }
+  saveShelves(); persist(); syncSavedUI();
   if(current === 'saved') renderSaved();
 }
 
@@ -821,20 +825,76 @@ function closeCompare(){
   if(cmpLastFocus && cmpLastFocus.focus) cmpLastFocus.focus();
 }
 
-/* ---------- 12. Закладки ---------- */
+/* ── Полки: именованные наборы находок ──────────────────────
+   Вместо одного списка закладок — несколько подборок под
+   разные задачи. Хранятся в браузере, делятся ссылкой. */
+const LS_SHELF = 'alx_shelves';
+let shelves = {};
+let activeShelf = 'default';
+
+function loadShelves(){
+  try{
+    const raw = localStorage.getItem(LS_SHELF);
+    if(raw) shelves = JSON.parse(raw);
+  }catch(e){}
+  if(!shelves || typeof shelves !== 'object') shelves = {};
+  if(!shelves.default) shelves.default = {name:'Моя подборка', items:[]};
+  // перенос старых закладок в полку по умолчанию
+  if(saved.size && !shelves.default.items.length){
+    shelves.default.items = Array.from(saved);
+  }
+}
+function saveShelves(){
+  try{ localStorage.setItem(LS_SHELF, JSON.stringify(shelves)); }catch(e){}
+}
+function shelfOf(k){
+  return Object.keys(shelves).filter(id => shelves[id].items.indexOf(k) > -1);
+}
+function currentShelf(){ return shelves[activeShelf] || shelves.default; }
+
+function renderShelfBar(){
+  const bar = $('#shelfBar');
+  if(!bar) return;
+  const ids = Object.keys(shelves);
+  bar.innerHTML = ids.map(id =>
+    '<button class="shelf-tab" type="button" data-shelf="'+esc(id)+'"'+
+    (id===activeShelf?' aria-current="true"':'')+'>'+
+    esc(shelves[id].name)+' <span class="sc">'+shelves[id].items.length+'</span></button>').join('')+
+    '<button class="shelf-add" type="button" data-shelf-new aria-label="Новая полка">+ Полка</button>';
+}
+
 function renderSaved(){
-  const list = savedTools();
+  const sh = currentShelf();
+  const list = sh.items.map(toolByKey).filter(Boolean);
   const box = $('#savedBody');
+  renderShelfBar();
   $('#savedCount').textContent = list.length + ' ' + plural(list.length,'находка','находки','находок');
+
+  const tools = '<div class="shelf-tools">'+
+    (Object.keys(shelves).length > 1 && activeShelf !== 'default'
+      ? '<button class="ghost-act" type="button" data-shelf-rename>Переименовать</button>'+
+        '<button class="ghost-act" type="button" data-shelf-del>Удалить полку</button>' : '')+
+    (list.length ? '<button class="ghost-act" type="button" data-shelf-share>Поделиться ссылкой</button>' : '')+
+  '</div>';
+
   if(!list.length){
-    box.innerHTML = '<div class="empty"><b>Пока пусто</b>'+
-      '<p>Открой указатель и жми на флажок у находки — она появится здесь.</p>'+
+    box.innerHTML = tools + '<div class="empty"><b>Полка пуста</b>'+
+      '<p>Открой указатель и жми на флажок у находки — она ляжет сюда.</p>'+
       '<button class="btn btn-ghost" type="button" data-go="index" style="margin-top:16px">К указателю</button></div>';
     return;
   }
-  box.innerHTML = '<div class="cards">' + list.map((t,i) => toolCard(t,i)).join('') + '</div>';
-  syncSavedUI();
+  box.innerHTML = tools + '<div class="cards">' + list.map((t,i) => toolCard(t,i)).join('') + '</div>';
+  syncSavedUI(); syncCompareUI();
   observe(box);
+}
+
+function encodeShelf(sh){
+  try{ return encodeURIComponent(btoa(unescape(encodeURIComponent(
+    JSON.stringify({n:sh.name, i:sh.items}))))); }catch(e){ return ''; }
+}
+function decodeShelf(str){
+  try{ return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(str))))); }
+  catch(e){ return null; }
 }
 
 /* ---------- 13. Claude ---------- */
@@ -1155,7 +1215,7 @@ function showView(name, push){
     if(location.hash !== h) history.pushState({v:name}, '', h);
   }
   const t = name === 'home' ? 'Находки Alexandrov Studio — журнал о нейросетях'
-    : (SECTIONS.find(s => s.id === name) || {title:'Закладки'}).title + ' — Находки';
+    : (SECTIONS.find(s => s.id === name) || {title:'Полки'}).title + ' — Находки';
   document.title = t;
   scrollTop();
   const h2 = document.querySelector('#view-'+name+' h1, #view-'+name+' h2');
@@ -1167,6 +1227,18 @@ function routeFromHash(){
   const parts = raw.split('/').filter(Boolean);
   if(!parts.length){ showView('home', false); return; }
   const v = parts[0];
+  if(v === 'shelf' && parts[1]){
+    const got = decodeShelf(parts.slice(1).join('/'));
+    if(got && Array.isArray(got.i)){
+      const id = 's' + Date.now().toString(36);
+      shelves[id] = {name:(got.n||'Полка из ссылки').slice(0,40), items:got.i.filter(k=>!!toolByKey(k))};
+      activeShelf = id; saveShelves(); syncSavedUI();
+      showView('saved', false);
+      toast('Полка «'+shelves[id].name+'» добавлена');
+      return;
+    }
+    showView('saved', false); return;
+  }
   if(v === 'models' && parts[1]){ showView('models', false); openModel(parts[1]); return; }
   if(VIEWS.indexOf(v) !== -1){
     if(v === 'models') closeModelSilent();
@@ -1252,6 +1324,40 @@ document.addEventListener('click', e => {
   if(e.target.closest('[data-cmp-clear]')){ compare = []; cmpDismissed = false; syncCompareUI(); return; }
   if(e.target.closest('[data-cmp-close]')){ closeCompare(); return; }
 
+  const shTab = e.target.closest('[data-shelf]');
+  if(shTab){ activeShelf = shTab.dataset.shelf; renderSaved(); return; }
+
+  if(e.target.closest('[data-shelf-new]')){
+    const name = prompt('Название полки:', 'Стек для видео');
+    if(name && name.trim()){
+      const id = 's' + Date.now().toString(36);
+      shelves[id] = {name:name.trim().slice(0,40), items:[]};
+      activeShelf = id; saveShelves(); renderSaved(); toast('Полка создана');
+    }
+    return;
+  }
+  if(e.target.closest('[data-shelf-rename]')){
+    const sh = currentShelf();
+    const name = prompt('Новое название:', sh.name);
+    if(name && name.trim()){ sh.name = name.trim().slice(0,40); saveShelves(); renderSaved(); }
+    return;
+  }
+  if(e.target.closest('[data-shelf-del]')){
+    if(activeShelf === 'default') return;
+    if(confirm('Удалить полку «'+currentShelf().name+'»?')){
+      delete shelves[activeShelf]; activeShelf = 'default';
+      saveShelves(); syncSavedUI(); renderSaved(); toast('Полка удалена');
+    }
+    return;
+  }
+  if(e.target.closest('[data-shelf-share]')){
+    const url = location.origin + location.pathname + '#/shelf/' + encodeShelf(currentShelf());
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+      .then(() => toast('Ссылка на полку скопирована'))
+      .catch(() => toast('Не вышло скопировать'));
+    return;
+  }
+
   const cp = e.target.closest('[data-copy]');
   if(cp){
     const txt = cp.dataset.copy;
@@ -1301,7 +1407,7 @@ let palItems = [], palSel = 0, palLastFocus = null;
 function buildPalIndex(){
   const items = [];
   SECTIONS.forEach(s => items.push({t:s.title, k:'раздел', run:() => showView(s.id,true)}));
-  items.push({t:'Закладки', k:'раздел', run:() => showView('saved',true)});
+  items.push({t:'Полки', k:'раздел', run:() => showView('saved',true)});
   items.push({t:'Подобрать под задачу', k:'мастер', run:openWiz});
   items.push({t:'Сменить тему', k:'вид', run:() => themeBtn.click()});
   ALL_CATS.forEach(c => items.push({t:c.label, k:'рубрика', run:() => {
@@ -1547,6 +1653,7 @@ renderRecipes();
 renderNext();
 wireOpen($('#idxBody'));
 wireOpen($('#savedBody'));
+loadShelves();
 syncSavedUI();
 routeFromHash();
 observe(document);
