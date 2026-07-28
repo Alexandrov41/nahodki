@@ -951,12 +951,12 @@ function renderSaved(){
   renderShelfBar();
   $('#savedCount').textContent = list.length + ' ' + plural(list.length,'находка','находки','находок');
 
-  const tools = '<div class="shelf-tools">'+
+  const toolsInner =
     (Object.keys(shelves).length > 1 && activeShelf !== 'default'
       ? '<button class="ghost-act" type="button" data-shelf-rename>Переименовать</button>'+
         '<button class="ghost-act" type="button" data-shelf-del>Удалить полку</button>' : '')+
-    (list.length ? '<button class="ghost-act" type="button" data-shelf-share>Поделиться ссылкой</button>' : '')+
-  '</div>';
+    (list.length ? '<button class="ghost-act" type="button" data-shelf-share>Поделиться ссылкой</button>' : '');
+  const tools = toolsInner ? '<div class="shelf-tools">'+toolsInner+'</div>' : '';
 
   if(!list.length){
     box.innerHTML = tools + '<div class="empty"><b>Полка пуста</b>'+
@@ -1192,6 +1192,52 @@ function renderShowcase(){
     '</article>';
   }).join('');
   observe(box);
+}
+
+/* ── Наборные заставки: рисуются в SVG краской раздела ──────
+   Для разделов, где иллюстрация не нужна как таковая — важнее,
+   чтобы полоса была и держала ритм номера. Ничего не грузится. */
+const SVG_BANDS = {
+  fails:
+    '<rect x="60" y="60" width="240" height="200" fill="currentColor" opacity=".92"/>'+
+    '<rect x="316" y="84" width="240" height="200" fill="currentColor" opacity=".55"/>'+
+    '<rect x="572" y="42" width="240" height="200" fill="currentColor" opacity=".92"/>'+
+    '<circle cx="1000" cy="150" r="96" fill="currentColor" opacity=".9"/>'+
+    '<circle cx="1024" cy="176" r="96" fill="currentColor" opacity=".4"/>'+
+    '<rect x="1180" y="70" width="72" height="180" fill="currentColor" opacity=".85"/>'+
+    '<rect x="1272" y="110" width="72" height="180" fill="currentColor" opacity=".5"/>'+
+    '<rect x="60" y="322" width="1284" height="26" fill="currentColor" opacity=".8"/>',
+  pay:
+    '<rect x="60" y="70" width="900" height="52" fill="currentColor" opacity=".9"/>'+
+    '<rect x="60" y="164" width="640" height="52" fill="currentColor" opacity=".55"/>'+
+    '<rect x="800" y="164" width="160" height="52" fill="currentColor" opacity=".55"/>'+
+    '<rect x="60" y="258" width="900" height="52" fill="currentColor" opacity=".9"/>'+
+    '<circle cx="1160" cy="190" r="130" fill="currentColor" opacity=".92"/>'+
+    '<circle cx="1196" cy="190" r="130" fill="currentColor" opacity=".35"/>',
+  chron:
+    '<rect x="60" y="60" width="26" height="290" fill="currentColor" opacity=".9"/>'+
+    '<rect x="150" y="110" width="26" height="240" fill="currentColor" opacity=".7"/>'+
+    '<rect x="240" y="160" width="26" height="190" fill="currentColor" opacity=".55"/>'+
+    '<rect x="330" y="96" width="26" height="254" fill="currentColor" opacity=".8"/>'+
+    '<rect x="420" y="200" width="26" height="150" fill="currentColor" opacity=".45"/>'+
+    '<circle cx="700" cy="205" r="145" fill="currentColor" opacity=".9"/>'+
+    '<path d="M700 60 A145 145 0 0 1 700 350 Z" fill="currentColor" opacity=".45"/>'+
+    '<rect x="920" y="60" width="424" height="26" fill="currentColor" opacity=".8"/>'+
+    '<rect x="920" y="150" width="424" height="26" fill="currentColor" opacity=".6"/>'+
+    '<rect x="920" y="240" width="424" height="26" fill="currentColor" opacity=".4"/>'+
+    '<rect x="920" y="324" width="424" height="26" fill="currentColor" opacity=".8"/>'
+};
+
+function drawBands(){
+  Object.keys(SVG_BANDS).forEach(id => {
+    const host = document.getElementById('band-' + id);
+    if(!host) return;
+    host.innerHTML =
+      '<svg viewBox="0 0 1404 410" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
+        '<rect width="1404" height="410" fill="var(--accent-soft)"/>'+
+        SVG_BANDS[id] +
+      '</svg>';
+  });
 }
 
 /* ── Карта решений ── */
@@ -1759,6 +1805,7 @@ renderClaude();
 renderCraft();
 renderRecipes();
 renderNext();
+drawBands();
 wireOpen($('#idxBody'));
 wireOpen($('#savedBody'));
 loadShelves();

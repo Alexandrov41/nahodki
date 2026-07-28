@@ -2158,3 +2158,6 @@ html[data-theme="dark"] .cover h1 em{
   .fork-arm{display:none;}
   .fork-then{padding:10px 14px;}
 }
+
+/* Наборные заставки: рисуются в SVG краской раздела */
+.opener-art svg{width:100%;height:100%;display:block;color:var(--accent);}
