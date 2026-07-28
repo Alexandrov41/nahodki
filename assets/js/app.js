@@ -117,13 +117,69 @@ const SECTIONS = [
    lead:'Навыки поверх любой модели: формула запроса, референсы, запреты, стек.', band:'band-craft'},
   {id:'recipes', n:'05', title:'Связки',               folio:'18 маршрутов', fam:'sound',
    lead:'Готовые цепочки: что за чем открыть, чтобы получить результат.', band:'band-recipes'},
-  {id:'pay',     n:'06', title:'Практикум: оплата',    folio:'3 пути', fam:'trade',
+  {id:'showcase',n:'06', title:'Витрина работ',        folio:'6 разборов', fam:'trade',
+   lead:'Что получается на выходе — с задачей, стеком и граблями. Всё сделано для этого выпуска.', band:''},
+  {id:'pay',     n:'07', title:'Практикум: оплата',    folio:'3 пути', fam:'word',
    lead:'Почему карта не проходит и что реально работает из России.', band:''},
-  {id:'chron',   n:'07', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
+  {id:'chron',   n:'08', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
    lead:'Что убрал, что добавил и где ошибся — с датами.', band:''}
 ];
 
-const VIEWS = ['home','index','claude','models','craft','recipes','saved','pay','chron'];
+/* ── Витрина: что из этого выходит ──────────────────────────
+   Все работы сделаны для этого выпуска специально. Ничего не
+   заимствовано: чужие результаты выдавать за свои нечестно,
+   а брать их без разрешения — ещё и незаконно. */
+const SHOWCASE = [
+  {id:'sh-image', fam:'image', art:'show-image',
+   title:'Обложка выпуска',
+   task:'Нужен портрет для разворота — узнаваемый, но не фотография человека, которого не спросили.',
+   stack:['art:Midjourney','edit:Nano Banana Pro'],
+   how:'Собрал в два шага. Сначала общая геометрия и палитра одним запросом с жёстким ограничением по цветам. Потом правка словами: убрать лишние оттенки, усилить диагональ, добавить зерно.',
+   catch:'С первого раза модель дала пять цветов вместо трёх. Помогла строка «только эти три краски, остальное — бумага» и отдельный запрет на градиенты.',
+   time:'20 минут, 6 попыток'},
+
+  {id:'sh-motion', fam:'motion', art:'show-motion',
+   title:'Раскадровка ролика',
+   task:'Показать движение камеры до того, как тратить генерации видео.',
+   stack:['art:Nano Banana Pro','video:Kling'],
+   how:'Раскадровка рисуется как единый кадр с четырьмя окнами — так модель держит один стиль во всех клетках. Дальше каждое окно уходит в видео отдельным запросом.',
+   catch:'Просить четыре отдельные картинки бесполезно: стиль поплывёт. Только одним кадром с сеткой внутри.',
+   time:'15 минут на раскадровку'},
+
+  {id:'sh-sound', fam:'sound', art:'show-sound',
+   title:'Обложка для трека',
+   task:'Визуал под аудио: должен читаться в ленте размером с ноготь.',
+   stack:['sound:Suno','art:Ideogram'],
+   how:'Сначала трек, потом картинка под его настроение. Композиция строилась от миниатюры: если в 80 пикселях не читается — переделываю.',
+   catch:'Модели тянет добавить ноты и скрипичный ключ. Пришлось прямо запретить — абстракция работает лучше буквальности.',
+   time:'25 минут вместе с треком'},
+
+  {id:'sh-word', fam:'word', art:'show-word',
+   title:'Разворот статьи',
+   task:'Показать структуру текста до вёрстки — где заголовки, где выноски.',
+   stack:['text:Claude','art:Recraft'],
+   how:'Claude собрал структуру и объём блоков, Recraft отрисовал сетку разворота. Это макет для обсуждения, а не финальная вёрстка.',
+   catch:'Просить «страницу с текстом» — гарантированная каша из нечитаемых букв. Правильно просить полосы вместо строк.',
+   time:'10 минут'},
+
+  {id:'sh-machine', fam:'machine', art:'show-machine',
+   title:'Схема автоматизации',
+   task:'Объяснить связку из шести сервисов так, чтобы понял не технарь.',
+   stack:['text:Claude','art:Ideogram'],
+   how:'Сначала текстом описал узлы и связи, потом попросил схему строго по описанию. Ключевое — задать иерархию: что центр, что ветви.',
+   catch:'Без указания «прямые углы, без пересечений» линии превращаются в спагетти.',
+   time:'12 минут'},
+
+  {id:'sh-trade', fam:'trade', art:'show-trade',
+   title:'Карточка товара',
+   task:'Макет для маркетплейса: товар, выгоды, цена — читаемо с телефона.',
+   stack:['mp:Айдентика','edit:Photoroom'],
+   how:'Специализированный сервис обгоняет универсальные модели: он знает форматы площадок и не врёт в кириллице. Фон и обтравка — отдельным шагом.',
+   catch:'Больше четырёх выгод на слайд — карточку перестают читать. Проверял на себе.',
+   time:'8 минут на макет'}
+];
+
+const VIEWS = ['home','index','claude','models','craft','recipes','showcase','saved','pay','chron'];
 
 /* ---------- 4. Состояние ---------- */
 let active = 'all';
@@ -794,6 +850,35 @@ function renderRecipes(){
   observe(box);
 }
 
+/* ── Витрина работ ── */
+function renderShowcase(){
+  const box = $('#showcaseGrid');
+  if(!box) return;
+  box.innerHTML = SHOWCASE.map((w,i) => {
+    const chips = w.stack.map(k => {
+      const t = toolByKey(k);
+      return t ? '<button class="linkchip" type="button" data-jump="'+esc(k)+'">'+esc(t.name)+'</button>' : '';
+    }).join('');
+    return '<article class="work rise" data-fam="'+w.fam+'">'+
+      '<figure class="work-art">'+
+        '<picture><source srcset="art/'+w.art+'.webp" type="image/webp">'+
+        '<img src="art/'+w.art+'.jpg" alt="Пример работы: '+esc(w.title)+'" width="900" height="675" loading="lazy" decoding="async"></picture>'+
+        '<figcaption class="work-n">'+String(i+1).padStart(2,'0')+'</figcaption>'+
+      '</figure>'+
+      '<div class="work-body">'+
+        '<h3>'+esc(w.title)+'</h3>'+
+        '<p class="work-task">'+esc(w.task)+'</p>'+
+        '<p class="wl">Чем сделано</p>'+
+        '<div class="linkrow">'+chips+'</div>'+
+        '<p class="wl">Как</p><p class="work-txt">'+esc(w.how)+'</p>'+
+        '<div class="work-catch"><span class="wl">Грабли</span><p>'+esc(w.catch)+'</p></div>'+
+        '<p class="work-time">'+esc(w.time)+'</p>'+
+      '</div>'+
+    '</article>';
+  }).join('');
+  observe(box);
+}
+
 /* ---------- 17. Хроника ---------- */
 function renderChron(){
   const box = $('#chronBody');
@@ -866,6 +951,7 @@ function showView(name, push){
   if(name === 'saved')   renderSaved();
   if(name === 'models'){ if($('#modelArticle').hidden) renderModels(); }
   if(name === 'chron')   renderChron();
+  if(name === 'showcase') renderShowcase();
 
   if(push !== false){
     const h = name === 'home' ? ' ' : '#/'+name;
