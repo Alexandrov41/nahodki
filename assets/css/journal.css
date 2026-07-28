@@ -2092,3 +2092,69 @@ html[data-theme="dark"] .cover h1 em{
   .seal-t{font-size:30px;}
   .seal-s{font-size:10px;}
 }
+
+/* ============================================================
+   42. КАРТА РЕШЕНИЙ
+   Развилка: условие слева, находка справа, между ними связь.
+   ============================================================ */
+.mapg{
+  padding:clamp(22px,3.5vw,34px) 0;
+  border-top:1px solid var(--line);
+}
+.mapg:first-child{border-top:2px solid var(--ink);}
+.mapg-head{
+  display:flex;align-items:baseline;gap:12px;
+  margin-bottom:clamp(14px,2.4vw,22px);
+}
+.mapg-head h3{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(21px,3vw,28px);line-height:1.1;
+}
+.mapg-n{
+  margin-left:auto;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  color:var(--accent);
+}
+.forks{list-style:none;margin:0;padding:0;display:grid;gap:2px;}
+.fork{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);
+  align-items:center;gap:0;
+  padding:4px 0;
+}
+.fork-if{
+  font-size:15px;color:var(--ink-soft);
+  padding:12px 16px 12px 0;
+  text-align:right;
+}
+.fork-arm{
+  position:relative;height:100%;min-height:44px;
+  display:block;
+}
+.fork-arm::before{
+  content:"";position:absolute;left:0;right:9px;top:50%;
+  height:1px;background:var(--line-strong);
+}
+.fork-arm::after{
+  content:"";position:absolute;right:5px;top:50%;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--accent);transform:translateY(-50%);
+}
+.fork-then{
+  display:flex;flex-direction:column;gap:2px;
+  text-align:left;background:none;cursor:pointer;
+  border:0;border-left:2px solid var(--accent);
+  padding:11px 16px;min-height:52px;justify-content:center;
+  color:var(--ink);
+  transition:background .24s var(--ease),padding-left .24s var(--ease);
+}
+.fork-then:hover{background:var(--accent-soft);padding-left:22px;}
+.fork-then b{font-family:var(--serif);font-weight:400;font-size:18px;line-height:1.15;}
+.fork-then i{font-style:normal;font-size:13.5px;color:var(--ink-soft);}
+
+@media(max-width:760px){
+  .fork{grid-template-columns:1fr;gap:0;padding:8px 0;}
+  .fork-if{text-align:left;padding:0 0 8px;font-size:14px;}
+  .fork-arm{display:none;}
+  .fork-then{padding:10px 14px;}
+}

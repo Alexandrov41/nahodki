@@ -158,13 +158,15 @@ const SECTIONS = [
    lead:'Навыки поверх любой модели: формула запроса, референсы, запреты, стек.', band:'band-craft'},
   {id:'recipes', n:'05', title:'Связки',               folio:'18 маршрутов', fam:'sound',
    lead:'Готовые цепочки: что за чем открыть, чтобы получить результат.', band:'band-recipes'},
-  {id:'showcase',n:'06', title:'Витрина работ',        folio:'6 разборов', fam:'trade',
+  {id:'map',     n:'06', title:'Карта решений',        folio:'32 развилки', fam:'image',
+   lead:'Не список по алфавиту, а маршрут: что нужно, какое условие решает и чем делать.', band:''},
+  {id:'showcase',n:'07', title:'Витрина работ',        folio:'6 разборов', fam:'trade',
    lead:'Что получается на выходе — с задачей, стеком и граблями. Всё сделано для этого выпуска.', band:''},
-  {id:'pay',     n:'07', title:'Практикум: оплата',    folio:'3 пути', fam:'word',
+  {id:'pay',     n:'08', title:'Практикум: оплата',    folio:'3 пути', fam:'word',
    lead:'Почему карта не проходит и что реально работает из России.', band:''},
-  {id:'fails',   n:'08', title:'Что сломалось',        folio:'6 разборов', fam:'motion',
+  {id:'fails',   n:'09', title:'Что сломалось',        folio:'6 разборов', fam:'motion',
    lead:'Обещания, которые не сбылись, и мои собственные промахи. С выводом, что делать вместо.', band:''},
-  {id:'chron',   n:'09', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
+  {id:'chron',   n:'10', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
    lead:'Что убрал, что добавил и где ошибся — с датами.', band:''}
 ];
 
@@ -269,7 +271,63 @@ const FAILS = [
    now:'В разборах агентов запреты вынесены в отдельный пункт промпта: не покупать, не отправлять, не публиковать.'}
 ];
 
-const VIEWS = ['home','index','claude','models','craft','recipes','showcase','fails','saved','pay','chron'];
+/* ── Карта решений: развилки вместо списка ──────────────────
+   Не каталог по алфавиту, а маршрут: что нужно → какое условие
+   решает → чем делать. Ложится на систему семейств. */
+const MAP = [
+  {fam:'image', q:'Нужна картинка',
+   forks:[
+     {if:'Важна атмосфера, а не точность', then:'art:Midjourney', note:'эталон вкуса'},
+     {if:'Нужен фотореализм', then:'art:Flux', note:'выглядит как съёмка'},
+     {if:'Надо править готовое фото словами', then:'art:Nano Banana Pro', note:'правки без развала кадра'},
+     {if:'На картинке будет русский текст', then:'banner:Recraft', note:'единственный, кто не ломает кириллицу'},
+     {if:'Нужна юридическая чистота', then:'art:Adobe Firefly', note:'обучен на лицензированном стоке'},
+     {if:'Без VPN и оплаты', then:'art:Kandinsky', note:'понимает русский напрямую'}
+   ]},
+  {fam:'motion', q:'Нужно видео',
+   forks:[
+     {if:'Нужен звук прямо в кадре', then:'video:Veo 3', note:'экономит этап озвучки'},
+     {if:'Важна цена за клип', then:'video:Kling', note:'работает из России'},
+     {if:'Оживить фотографию', then:'anim:Kling', note:'портрет начинает дышать'},
+     {if:'Нужен говорящий ведущий', then:'avatar:HeyGen', note:'липсинк как у живого'},
+     {if:'Сложная физика: ткань, вода', then:'video:Seedance 2.0', note:'честное поведение материи'},
+     {if:'Первый шаг без затрат', then:'video:Kandinsky Video', note:'бесплатно и без VPN'}
+   ]},
+  {fam:'word', q:'Нужен текст или разбор',
+   forks:[
+     {if:'Длинный документ целиком', then:'text:Claude', note:'помнит начало на пятидесятой странице'},
+     {if:'Быстрый черновик', then:'text:ChatGPT', note:'самый низкий порог входа'},
+     {if:'Ответ со ссылками на источники', then:'research:Perplexity', note:'можно доказать'},
+     {if:'Строго по своим файлам', then:'research:NotebookLM', note:'не выдумывает вне загруженного'},
+     {if:'Без VPN и оплаты', then:'text:DeepSeek', note:'сильна в логике'},
+     {if:'Презентация из абзаца', then:'office:Gamma', note:'питч за десять минут'}
+   ]},
+  {fam:'sound', q:'Нужен звук',
+   forks:[
+     {if:'Песня с вокалом', then:'sound:Suno', note:'трек за минуту'},
+     {if:'Дикторская озвучка', then:'sound:ElevenLabs', note:'не отличить от диктора'},
+     {if:'Русские ударения без ошибок', then:'sound:Яндекс SpeechKit', note:'оплата рублями'},
+     {if:'Перевести свой ролик', then:'dub:HeyGen Translate', note:'переклеит губы'}
+   ]},
+  {fam:'machine', q:'Нужно автоматизировать',
+   forks:[
+     {if:'Правки в большом проекте', then:'code:Cursor', note:'видит репозиторий целиком'},
+     {if:'Рефакторинг без рук', then:'code:Claude Code', note:'сам читает и правит'},
+     {if:'Сайт по описанию', then:'code:Lovable', note:'без единой строчки кода'},
+     {if:'Цепочка сервисов мышкой', then:'agent:Make', note:'рутина на автопилоте'},
+     {if:'Всё на своём сервере', then:'agent:n8n', note:'данные не уходят в облако'},
+     {if:'Разобрать встречу', then:'meet:Fireflies', note:'сам разнесёт задачи'}
+   ]},
+  {fam:'trade', q:'Нужны продажи',
+   forks:[
+     {if:'Карточка для WB и Ozon', then:'mp:Айдентика', note:'знает форматы площадок'},
+     {if:'Воронка из пяти слайдов', then:'mp:Fabula AI', note:'платишь за скачивание'},
+     {if:'Сотни товаров разом', then:'mp:MPCard', note:'пакетная обработка'},
+     {if:'Обтравка и фон', then:'edit:Photoroom', note:'в один тап'}
+   ]}
+];
+
+const VIEWS = ['home','index','claude','models','craft','recipes','map','showcase','fails','saved','pay','chron'];
 
 /* ---------- 4. Состояние ---------- */
 let active = 'all';
@@ -1136,6 +1194,32 @@ function renderShowcase(){
   observe(box);
 }
 
+/* ── Карта решений ── */
+function renderMap(){
+  const box = $('#mapBody');
+  if(!box) return;
+  box.innerHTML = MAP.map(g =>
+    '<section class="mapg rise" data-fam="'+g.fam+'">'+
+      '<div class="mapg-head">'+
+        '<span class="fam-dot"></span>'+
+        '<h3>'+esc(g.q)+'</h3>'+
+        '<span class="mapg-n">'+g.forks.length+'</span>'+
+      '</div>'+
+      '<ul class="forks">'+ g.forks.map(f => {
+        const t = toolByKey(f.then);
+        return '<li class="fork">'+
+          '<span class="fork-if">'+esc(f.if)+'</span>'+
+          '<span class="fork-arm" aria-hidden="true"></span>'+
+          '<button class="fork-then" type="button" data-jump="'+esc(f.then)+'">'+
+            '<b>'+esc(t ? t.name : f.then)+'</b>'+
+            '<i>'+esc(f.note)+'</i>'+
+          '</button>'+
+        '</li>';
+      }).join('') +'</ul>'+
+    '</section>').join('');
+  observe(box);
+}
+
 /* ── Что сломалось ── */
 function renderFails(){
   const box = $('#failsList');
@@ -1232,6 +1316,7 @@ function showView(name, push){
   if(name === 'chron')   renderChron();
   if(name === 'showcase') renderShowcase();
   if(name === 'fails')   renderFails();
+  if(name === 'map')     renderMap();
 
   if(push !== false){
     const h = name === 'home' ? ' ' : '#/'+name;

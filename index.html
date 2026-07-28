@@ -76,6 +76,7 @@
     <button class="rlink" type="button" data-go="models">Модели</button>
     <button class="rlink" type="button" data-go="craft">Ремесло</button>
     <button class="rlink" type="button" data-go="recipes">Связки</button>
+    <button class="rlink" type="button" data-go="map">Карта</button>
     <button class="rlink" type="button" data-go="showcase">Витрина</button>
     <button class="rlink" type="button" data-go="fails">Сломалось</button>
     <button class="rlink" type="button" data-go="pay">Оплата</button>
@@ -340,6 +341,21 @@
   <div class="shelf-bar" id="shelfBar" role="group" aria-label="Полки"></div>
   <div class="res-head"><h3>На полке</h3><span class="n" id="savedCount">0 находок</span></div>
   <div id="savedBody"></div>
+</section>
+
+<!-- ═══════════ КАРТА РЕШЕНИЙ ═══════════ -->
+<section class="view" id="view-map" aria-labelledby="mapTitle">
+  <button class="back-btn" type="button" data-go="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    На обложку
+  </button>
+  <div class="opener">
+    <div class="opener-kicker"><span class="sep"></span>Раздел 06 · маршрутная карта</div>
+    <h2 id="mapTitle">Карта решений</h2>
+    <p class="lead">Каталог отвечает на вопрос «что есть». Эта карта отвечает на вопрос «что взять». Слева условие, справа находка — без промежуточного чтения.</p>
+  </div>
+  <div id="mapBody"></div>
+  <div class="next-slot" id="next-map"></div>
 </section>
 
 <!-- ═══════════ ВИТРИНА ═══════════ -->
