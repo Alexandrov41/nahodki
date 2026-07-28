@@ -114,10 +114,19 @@ function plural(n, one, few, many){
   return many;
 }
 
+/* Размеры обязательны: без них браузер не резервирует место
+   и страница дёргается при загрузке (CLS). Значения замерены
+   по реальным файлам — см. tools/sizes.mjs. */
+const ART_SIZE = {"band-claude":[1680,560],"band-craft":[1680,560],"band-index":[1680,560],"band-map":[1680,560],"band-models":[1680,560],"band-recipes":[1680,560],"band-show":[1680,560],"cover-04":[900,1350],"hero":[1200,655],"plate-3d":[760,424],"plate-agent":[760,415],"plate-anim":[760,424],"plate-avatar":[760,322],"plate-banner":[760,322],"plate-code":[760,322],"plate-dub":[760,424],"plate-edit":[760,424],"plate-meet":[760,424],"plate-office":[760,424],"plate-research":[760,424],"plate-seller":[760,415],"plate-sound":[760,1018],"plate-text":[760,415],"plate-video":[760,415],"plate-visual":[760,415],"show-image":[900,675],"show-machine":[900,675],"show-motion":[900,675],"show-sound":[900,675],"show-trade":[900,675],"show-word":[900,675]};
+function picSize(name){
+  return ART_SIZE[name] || [1200,750];
+}
 function pic(name, alt, cls){
+  const [w,h] = picSize(name);
   return '<picture>' +
     '<source srcset="art/'+name+'.webp" type="image/webp">' +
-    '<img src="art/'+name+'.jpg" alt="'+esc(alt||'')+'" loading="lazy" decoding="async"'+
+    '<img src="art/'+name+'.jpg" alt="'+esc(alt||'')+'" width="'+w+'" height="'+h+'"'+
+    ' loading="lazy" decoding="async"'+
     (cls?' class="'+cls+'"':'')+'></picture>';
 }
 

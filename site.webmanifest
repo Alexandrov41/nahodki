@@ -1,0 +1,15 @@
+{
+  "name": "Находки Alexandrov Studio",
+  "short_name": "Находки",
+  "description": "Журнал о нейросетях: находки по задачам, разборы моделей, готовые связки.",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4EFE4",
+  "theme_color": "#F4EFE4",
+  "icons": [
+    { "src": "art/cover-04.jpg", "sizes": "900x1350", "type": "image/jpeg", "purpose": "any" }
+  ]
+}
