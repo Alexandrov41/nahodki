@@ -24,6 +24,21 @@ const noVpnOk = t => /без VPN|локально|агрегатор/i.test(t.ac
 const catById = id => ALL_CATS.find(c => c.id === id);
 const toolByKey = k => ALL_TOOLS.find(t => keyOf(t) === k);
 
+/* Шесть семейств задач. Рубрика наследует краску своего семейства —
+   цвет работает указателем, а не украшением. */
+const FAMILY = {
+  image:  {id:'image',  label:'Изображение', cats:['art','banner','edit','3d']},
+  motion: {id:'motion', label:'Движение',    cats:['video','anim','avatar']},
+  sound:  {id:'sound',  label:'Звук',        cats:['sound','dub']},
+  word:   {id:'word',   label:'Слово',       cats:['text','research','office']},
+  machine:{id:'machine',label:'Машина',      cats:['code','agent','meet']},
+  trade:  {id:'trade',  label:'Дело',        cats:['mp']}
+};
+const CAT_FAMILY = {};
+Object.values(FAMILY).forEach(f => f.cats.forEach(c => CAT_FAMILY[c] = f.id));
+const famOf = catId => CAT_FAMILY[catId] || 'image';
+const famLabel = catId => (FAMILY[famOf(catId)] || {}).label || '';
+
 const ART = {art:'plate-visual',banner:'plate-banner',video:'plate-video',
   anim:'plate-anim',sound:'plate-sound',text:'plate-text',avatar:'plate-avatar',
   edit:'plate-edit',dub:'plate-dub',code:'plate-code',research:'plate-research',
@@ -91,19 +106,19 @@ const BR_ICO = {
 
 /* ---------- 3. Разделы журнала ---------- */
 const SECTIONS = [
-  {id:'index',   n:'01', title:'Указатель находок',   folio:'75 сервисов',
+  {id:'index',   n:'01', title:'Указатель находок',   folio:'75 сервисов', fam:'image',
    lead:'Всё, чем пользуюсь сам, разложено по задачам. Поиск, фильтр по доступу, честные лимиты.', band:'band-index'},
-  {id:'claude',  n:'02', title:'Claude: полный разбор', folio:'24 главы',
+  {id:'claude',  n:'02', title:'Claude: полный разбор', folio:'24 главы', fam:'word',
    lead:'От первого запроса до своей видеостудии в чате. Четыре уровня погружения.', band:'band-claude'},
-  {id:'models',  n:'03', title:'Портреты моделей',     folio:'10 разборов',
+  {id:'models',  n:'03', title:'Портреты моделей',     folio:'10 разборов', fam:'motion',
    lead:'За что берут, какие параметры решают и где обожжёшься. С готовым промптом.', band:'band-models'},
-  {id:'craft',   n:'04', title:'Ремесло',              folio:'8 приёмов',
+  {id:'craft',   n:'04', title:'Ремесло',              folio:'8 приёмов', fam:'machine',
    lead:'Навыки поверх любой модели: формула запроса, референсы, запреты, стек.', band:'band-craft'},
-  {id:'recipes', n:'05', title:'Связки',               folio:'17 маршрутов',
+  {id:'recipes', n:'05', title:'Связки',               folio:'17 маршрутов', fam:'sound',
    lead:'Готовые цепочки: что за чем открыть, чтобы получить результат.', band:'band-recipes'},
-  {id:'pay',     n:'06', title:'Практикум: оплата',    folio:'3 пути',
+  {id:'pay',     n:'06', title:'Практикум: оплата',    folio:'3 пути', fam:'trade',
    lead:'Почему карта не проходит и что реально работает из России.', band:''},
-  {id:'chron',   n:'07', title:'Хроника выпусков',     folio:'что менялось',
+  {id:'chron',   n:'07', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
    lead:'Что убрал, что добавил и где ошибся — с датами.', band:''}
 ];
 
@@ -111,6 +126,7 @@ const VIEWS = ['home','index','claude','models','craft','recipes','saved','pay',
 
 /* ---------- 4. Состояние ---------- */
 let active = 'all';
+let activeFam = null;
 let onlyNoVpn = false;
 let sortMode = 'default';
 let viewMode = 'list';
@@ -228,35 +244,84 @@ function renderCover(){
     '<div class="fig"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>').join('');
 
   $('#toc').innerHTML = SECTIONS.map(s =>
-    '<button class="toc-row rise" type="button" data-go="'+s.id+'">'+
+    '<button class="toc-row rise" type="button" data-go="'+s.id+'" data-fam="'+s.fam+'">'+
       '<span class="num">'+s.n+'</span>'+
       '<span class="body"><h3>'+s.title+'</h3><p>'+s.lead+'</p></span>'+
       '<span class="folio">'+s.folio+' <span class="arrow">→</span></span>'+
     '</button>').join('');
 
+  // Легенда: шесть красок издания
+  $('#legend').innerHTML = Object.values(FAMILY).map(f => {
+    const n = ALL_TOOLS.filter(t => f.cats.includes(t.cat)).length;
+    return '<button class="legend-item" type="button" data-fam="'+f.id+'" data-legend="'+f.id+'">'+
+      '<i></i>'+f.label+' <b>'+n+'</b></button>';
+  }).join('');
+
   const order = ['art','video','mp','text','avatar','code','agent','sound'];
   const cats = order.map(catById).filter(Boolean);
   $('#plates').innerHTML = cats.map((c,i) => {
     const n = ALL_TOOLS.filter(t => t.cat === c.id).length;
-    return '<button class="plate rise" type="button" data-cat="'+c.id+'">'+
+    return '<button class="plate rise" type="button" data-cat="'+c.id+'" data-fam="'+famOf(c.id)+'">'+
       '<span class="plate-img">'+pic(ART[c.id]||'plate-visual','')+
         '<span class="plate-n">'+String(i+1).padStart(2,'0')+'</span></span>'+
       '<span class="plate-txt"><h3>'+c.label+'</h3>'+
-        '<span class="cnt">'+n+' '+plural(n,'находка','находки','находок')+'</span></span>'+
+        '<span class="cnt"><span class="fam-dot"></span>'+famLabel(c.id)+' · '+n+'</span></span>'+
     '</button>';
   }).join('');
 
+  renderPulse();
   observe($('#view-home'));
+}
+
+/* ── Пульс каталога: живая статистика вместо голых цифр ── */
+function renderPulse(){
+  const box = $('#pulse');
+  if(!box) return;
+
+  const fams = Object.values(FAMILY).map(f => ({
+    id:f.id, label:f.label,
+    n:uniqNames(ALL_TOOLS.filter(t => f.cats.includes(t.cat)))
+  })).sort((a,b) => b.n - a.n);
+  const max = Math.max.apply(null, fams.map(f => f.n));
+
+  const bars = fams.map(f =>
+    '<div class="pulse-row" data-fam="'+f.id+'">'+
+      '<span class="pulse-lab">'+f.label+'</span>'+
+      '<span class="pulse-track"><i style="--w:'+Math.round(f.n/max*100)+'%"></i></span>'+
+      '<span class="pulse-n">'+f.n+'</span>'+
+    '</div>').join('');
+
+  const free  = uniqNames(ALL_TOOLS.filter(isFree));
+  const noVpn = uniqNames(ALL_TOOLS.filter(noVpnOk));
+  const local = uniqNames(ALL_TOOLS.filter(t => /локально/i.test(t.access)));
+  const total = uniqNames(ALL_TOOLS);
+  const pct = n => Math.round(n/total*100);
+
+  box.innerHTML =
+    '<div class="pulse-bars">'+bars+'</div>'+
+    '<div class="pulse-facts">'+
+      '<div class="pfact"><b>'+pct(noVpn)+'%</b><span>работает из России без обходных путей</span></div>'+
+      '<div class="pfact"><b>'+pct(free)+'%</b><span>можно попробовать бесплатно</span></div>'+
+      '<div class="pfact"><b>'+local+'</b><span>ставятся на своё железо</span></div>'+
+    '</div>';
 }
 
 /* ---------- 11. Указатель ---------- */
 function buildChips(){
   const box = $('#chips');
-  const mk = (id,label,code) =>
-    '<button class="chip" type="button" role="button" data-chip="'+id+'" aria-pressed="'+
+  const mk = (id,label,code,fam) =>
+    '<button class="chip" type="button" data-chip="'+id+'"'+
+    (fam?' data-fam="'+fam+'"':'')+' aria-pressed="'+
     (active===id?'true':'false')+'">'+label+(code?' <span class="c">'+code+'</span>':'')+'</button>';
-  box.innerHTML = mk('all','Все находки','') +
-    ALL_CATS.map(c => mk(c.id, c.label, c.code)).join('');
+  box.innerHTML = mk('all','Все находки','','') +
+    ALL_CATS.map(c => mk(c.id, c.label, c.code, famOf(c.id))).join('');
+}
+
+/* Раздел окрашивается в краску активного семейства. */
+function paintView(el, catId){
+  if(!el) return;
+  if(catId) el.setAttribute('data-fam', famOf(catId));
+  else el.removeAttribute('data-fam');
 }
 
 function matches(t, q){
@@ -282,7 +347,7 @@ function detailHTML(t, uid){
 
 function idxRow(t, i){
   const k = keyOf(t), uid = 'd-'+k.replace(/[^a-zA-Zа-яА-Я0-9]/g,'-')+'-'+i;
-  return '<li class="idx-item">'+
+  return '<li class="idx-item" data-fam="'+famOf(t.cat)+'">'+
     '<button class="idx-btn" type="button" data-open="'+esc(k)+'" aria-expanded="false" aria-controls="'+uid+'">'+
       '<span class="mark">'+String(i+1).padStart(2,'0')+'</span>'+
       '<span><span class="idx-name">'+esc(t.name)+'</span><p class="idx-note">'+t.note+'</p></span>'+
@@ -292,7 +357,7 @@ function idxRow(t, i){
 
 function toolCard(t, i){
   const k = keyOf(t), uid = 'c-'+k.replace(/[^a-zA-Zа-яА-Я0-9]/g,'-')+'-'+i;
-  return '<div class="tcard-wrap">'+
+  return '<div class="tcard-wrap" data-fam="'+famOf(t.cat)+'">'+
     '<div class="tcard rise" role="button" tabindex="0" data-open="'+esc(k)+'" aria-expanded="false" aria-controls="'+uid+'">'+
       '<button class="save-btn" type="button" data-save="'+esc(k)+'" aria-pressed="false" aria-label="В закладки">'+ICO.bookmark+'</button>'+
       '<span class="tag">'+esc(t.catLabel)+'</span>'+
@@ -304,6 +369,7 @@ function toolCard(t, i){
 function renderIndex(){
   const q = query.trim().toLowerCase();
   let list = (q || active === 'all') ? ALL_TOOLS : ALL_TOOLS.filter(t => t.cat === active);
+  if(activeFam && active === 'all' && !q) list = list.filter(t => famOf(t.cat) === activeFam);
   list = list.filter(t => matches(t,q));
   if(onlyNoVpn) list = list.filter(noVpnOk);
 
@@ -314,7 +380,9 @@ function renderIndex(){
   const head = $('#idxHead'), body = $('#idxBody'), empty = $('#idxEmpty');
   const n = list.length;
   const cat = active === 'all' ? null : catById(active);
-  head.querySelector('h3').textContent = q ? 'Результаты поиска' : (cat ? cat.label : 'Все находки');
+  const famTitle = (activeFam && FAMILY[activeFam]) ? FAMILY[activeFam].label : null;
+  head.querySelector('h3').textContent = q ? 'Результаты поиска'
+    : (cat ? cat.label : (famTitle || 'Все находки'));
   // Считаем сервисы, а не записи: один инструмент может стоять в двух рубриках.
   const uniq = uniqNames(list);
   head.querySelector('.n').textContent = uniq + ' ' + plural(uniq,'находка','находки','находок');
@@ -337,9 +405,10 @@ function renderIndex(){
       if(!group.length) return;
       const open = expanded.has(c.id);
       const shown = open ? group : group.slice(0, PREVIEW);
-      html += '<div class="rise" style="margin-top:26px">'+
-        '<div class="res-head" style="margin-top:0"><h3>'+c.label+'</h3>'+
-        '<span class="n">'+group.length+' '+plural(group.length,'находка','находки','находок')+'</span></div>'+
+      html += '<div class="rise cat-group" data-fam="'+famOf(c.id)+'" style="margin-top:26px">'+
+        '<div class="res-head" style="margin-top:0">'+
+        '<h3><span class="fam-dot"></span>'+c.label+'</h3>'+
+        '<span class="n">'+famLabel(c.id)+' · '+group.length+' '+plural(group.length,'находка','находки','находок')+'</span></div>'+
         '<ul class="idx">'+ shown.map((t,i) => idxRow(t,i)).join('') +'</ul>'+
         (group.length > PREVIEW ?
           '<button class="more-btn" type="button" data-expand="'+c.id+'">'+
@@ -452,7 +521,7 @@ function renderCraft(){
 function renderModels(){
   const box = $('#modelsGrid');
   box.innerHTML = TOP_MODELS.map(m =>
-    '<button class="mcard rise" type="button" data-model="'+m.id+'">'+
+    '<button class="mcard rise" type="button" data-model="'+m.id+'" data-fam="'+famOf(m.cat)+'">'+
       '<span class="mcard-img">'+pic(m.art,'')+'</span>'+
       '<span class="mcard-txt">'+
         '<span class="mcard-top"><span class="tier'+(m.tier==='A'?' a':'')+'">'+m.tier+'</span>'+
@@ -471,12 +540,13 @@ function openModel(id){
   $('#modelsList').hidden = true;
   const box = $('#modelArticle');
   box.hidden = false;
+  box.setAttribute('data-fam', famOf(m.cat));
   const cat = catById(m.cat);
   box.innerHTML =
     '<button class="back-btn" type="button" data-models-back>'+ICO.back+' Все модели</button>'+
     '<div class="opener" style="padding-top:18px">'+
       '<div class="opener-art">'+pic(m.art,'')+'</div>'+
-      '<div class="opener-kicker"><span class="sep"></span>'+esc(cat?cat.label:'')+' · уровень '+m.tier+'</div>'+
+      '<div class="opener-kicker"><span class="sep"></span>'+famLabel(m.cat)+' · '+esc(cat?cat.label:'')+' · уровень '+m.tier+'</div>'+
       '<h2>'+esc(m.name)+'</h2>'+
       '<p class="lead">'+esc(m.lead)+'</p>'+
     '</div>'+
@@ -519,7 +589,9 @@ function renderRecipes(){
       '<p class="lead">'+esc(r.lead)+'</p>'+
       '<ol class="chain">'+ r.steps.map(s => {
         const t = toolByKey(s.k);
-        return '<li><span class="who">'+esc(t?t.name:s.k)+'</span><span class="what">'+esc(s.do)+'</span></li>';
+        const f = t ? famOf(t.cat) : '';
+        return '<li'+(f?' data-fam="'+f+'"':'')+'><span class="who">'+esc(t?t.name:s.k)+'</span>'+
+          '<span class="what">'+esc(s.do)+'</span></li>';
       }).join('') +'</ol>'+
     '</article>').join('');
   observe(box);
@@ -565,6 +637,17 @@ function showView(name, push){
   });
   $$('.rlink').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'true' : 'false'));
 
+  const sec = SECTIONS.find(x => x.id === name);
+  if(sec && sec.fam && name !== 'index'){
+    const el = document.getElementById('view-'+name);
+    if(el) el.setAttribute('data-fam', sec.fam);
+  }
+  if(name === 'index'){
+    const el = $('#view-index');
+    if(activeFam) el.setAttribute('data-fam', activeFam);
+    else if(active !== 'all') el.setAttribute('data-fam', famOf(active));
+    else el.setAttribute('data-fam','image');
+  }
   if(name === 'index')   renderIndex();
   if(name === 'saved')   renderSaved();
   if(name === 'models'){ if($('#modelArticle').hidden) renderModels(); }
@@ -607,16 +690,31 @@ document.addEventListener('click', e => {
 
   const cat = e.target.closest('[data-cat]');
   if(cat){
-    active = cat.dataset.cat; query = ''; $('#search').value = '';
+    active = cat.dataset.cat; activeFam = null; query = ''; $('#search').value = '';
     $('#searchClear').classList.remove('on');
-    buildChips(); showView('index', true); renderKit(active);
+    buildChips(); paintView($('#view-index'), active);
+    showView('index', true); renderKit(active);
+    return;
+  }
+
+  const leg = e.target.closest('[data-legend]');
+  if(leg){
+    activeFam = leg.dataset.legend;
+    active = 'all'; query = ''; $('#search').value = '';
+    $('#searchClear').classList.remove('on');
+    buildChips();
+    $('#view-index').setAttribute('data-fam', activeFam);
+    showView('index', true);
+    renderKit(null);
     return;
   }
 
   const chip = e.target.closest('[data-chip]');
   if(chip){
     active = chip.dataset.chip;
+    activeFam = null;
     $$('[data-chip]').forEach(c => c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'));
+    paintView($('#view-index'), active === 'all' ? null : active);
     renderIndex(); renderKit(active === 'all' ? null : active);
     return;
   }
