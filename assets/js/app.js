@@ -111,11 +111,11 @@ const SECTIONS = [
    lead:'Всё, чем пользуюсь сам, разложено по задачам. Поиск, фильтр по доступу, честные лимиты.', band:'band-index'},
   {id:'claude',  n:'02', title:'Claude: полный разбор', folio:'24 главы', fam:'word',
    lead:'От первого запроса до своей видеостудии в чате. Четыре уровня погружения.', band:'band-claude'},
-  {id:'models',  n:'03', title:'Портреты моделей',     folio:'10 разборов', fam:'motion',
+  {id:'models',  n:'03', title:'Портреты моделей',     folio:'12 разборов', fam:'motion',
    lead:'За что берут, какие параметры решают и где обожжёшься. С готовым промптом.', band:'band-models'},
   {id:'craft',   n:'04', title:'Ремесло',              folio:'8 приёмов', fam:'machine',
    lead:'Навыки поверх любой модели: формула запроса, референсы, запреты, стек.', band:'band-craft'},
-  {id:'recipes', n:'05', title:'Связки',               folio:'17 маршрутов', fam:'sound',
+  {id:'recipes', n:'05', title:'Связки',               folio:'18 маршрутов', fam:'sound',
    lead:'Готовые цепочки: что за чем открыть, чтобы получить результат.', band:'band-recipes'},
   {id:'pay',     n:'06', title:'Практикум: оплата',    folio:'3 пути', fam:'trade',
    lead:'Почему карта не проходит и что реально работает из России.', band:''},
@@ -699,17 +699,33 @@ function renderCraft(){
 }
 
 /* ---------- 15. Портреты моделей ---------- */
+/* Портрет модели — наборная карточка, а не картинка.
+   Монограмма, номер и рубрика набраны шрифтом издания: каждая
+   карточка уникальна, ничего не грузится и не дублируется. */
+function monogram(name){
+  const clean = name.replace(/[^A-Za-zА-Яа-я0-9 ]/g,'').trim();
+  const parts = clean.split(/\s+/);
+  if(parts.length > 1 && parts[1]) return (parts[0][0]+parts[1][0]).toUpperCase();
+  return clean.slice(0,2).toUpperCase();
+}
+
 function renderModels(){
   const box = $('#modelsGrid');
-  box.innerHTML = TOP_MODELS.map(m =>
-    '<button class="mcard rise" type="button" data-model="'+m.id+'" data-fam="'+famOf(m.cat)+'">'+
-      '<span class="mcard-img">'+pic(m.art,'')+'</span>'+
+  box.innerHTML = TOP_MODELS.map((m,i) => {
+    const cat = catById(m.cat);
+    return '<button class="mcard rise" type="button" data-model="'+m.id+'" data-fam="'+famOf(m.cat)+'">'+
+      '<span class="mplate">'+
+        '<span class="mplate-n">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="mplate-mono" aria-hidden="true">'+esc(monogram(m.name))+'</span>'+
+        '<span class="mplate-cat">'+esc(cat ? cat.label : '')+'</span>'+
+      '</span>'+
       '<span class="mcard-txt">'+
         '<span class="mcard-top"><span class="tier'+(m.tier==='A'?' a':'')+'">'+m.tier+'</span>'+
         '<h4>'+esc(m.name)+'</h4></span>'+
         '<p>'+esc(m.lead)+'</p>'+
       '</span>'+
-    '</button>').join('');
+    '</button>';
+  }).join('');
   observe(box);
 }
 
