@@ -77,6 +77,7 @@
     <button class="rlink" type="button" data-go="craft">Ремесло</button>
     <button class="rlink" type="button" data-go="recipes">Связки</button>
     <button class="rlink" type="button" data-go="showcase">Витрина</button>
+    <button class="rlink" type="button" data-go="fails">Сломалось</button>
     <button class="rlink" type="button" data-go="pay">Оплата</button>
     <button class="rlink" type="button" data-go="chron">Хроника</button>
   </div>
@@ -207,6 +208,10 @@
       <label class="toggle">
         <input type="checkbox" id="vpnToggle">
         Работает без VPN
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="dailyToggle">
+        Только рабочие
       </label>
       <div class="seg" id="sortSeg" role="group" aria-label="Сортировка">
         <button type="button" data-sort="default" aria-pressed="true">по рубрикам</button>
@@ -346,6 +351,24 @@
 
   <div class="works" id="showcaseGrid"></div>
   <div class="next-slot" id="next-showcase"></div>
+</section>
+
+<!-- ═══════════ ЧТО СЛОМАЛОСЬ ═══════════ -->
+<section class="view" id="view-fails" aria-labelledby="flTitle">
+  <button class="back-btn" type="button" data-go="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    На обложку
+  </button>
+  <div class="opener">
+    <div class="opener-kicker"><span class="sep"></span>Раздел 08 · разбор полётов</div>
+    <h2 id="flTitle">Что сломалось</h2>
+    <p class="lead">Сервисы, которые закрылись. Обещания, которые не сбылись. И мои собственные промахи — те, что дошли до читателя.</p>
+  </div>
+
+  <div class="pullquote">Каталог без раздела про неудачи — это витрина. Полезным его делает то, что здесь написано, чего делать не стоит.</div>
+
+  <div class="fails" id="failsList"></div>
+  <div class="next-slot" id="next-fails"></div>
 </section>
 
 <!-- ═══════════ ОПЛАТА ═══════════ -->

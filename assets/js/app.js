@@ -57,6 +57,47 @@ const ACC_SHORT = a =>
   /агрегатор/i.test(a) ? 'агрегатор' :
   /бесплатный тариф/i.test(a) ? 'есть free' : 'VPN';
 
+/* ── Личный статус находки ──────────────────────────────────
+   Отделяет то, чем пользуюсь постоянно, от того, что просто
+   проверил. Читателю это честнее любых оценок в звёздах. */
+const USE = {
+  daily:  {label:'в работе каждый день', short:'каждый день'},
+  often:  {label:'беру регулярно',        short:'регулярно'},
+  tested: {label:'проверил на задаче',    short:'проверил'},
+  watch:  {label:'держу на радаре',       short:'на радаре'}
+};
+const USED = {
+  'text:Claude':'daily', 'code:Claude Code':'daily', 'code:Cursor':'daily',
+  'art:Nano Banana Pro':'daily', 'art:Midjourney':'often', 'banner:Recraft':'often',
+  'text:ChatGPT':'often', 'text:DeepSeek':'often', 'sound:ElevenLabs':'often',
+  'video:Kling':'often', 'video:Veo 3':'often', 'edit:Nano Banana Pro':'often',
+  'research:Perplexity':'often', 'office:Gamma':'tested', 'avatar:HeyGen':'often',
+  'sound:Suno':'often', 'mp:Айдентика':'often', 'research:NotebookLM':'often',
+  'art:Flux':'tested', 'art:Ideogram':'often', 'banner:Ideogram':'tested',
+  'video:Runway':'tested', 'anim:Kling':'often', 'anim:Hedra':'tested',
+  'text:Gemini':'tested', 'agent:Manus':'tested', 'code:Lovable':'tested',
+  'edit:Photoroom':'often', 'dub:ElevenLabs Dubbing':'tested', 'meet:Otter':'tested',
+  '3d:Meshy':'tested', 'agent:n8n':'tested', 'agent:Make':'tested'
+};
+const useOf = t => USED[keyOf(t)] || 'watch';
+
+/* Реальная стоимость: сколько уходит в месяц при рабочей нагрузке.
+   Не прайс сервиса, а мой счёт. */
+const COST = {
+  'text:Claude':'~$20 — Pro, упираюсь в лимит пару раз в неделю',
+  'code:Claude Code':'входит в подписку Claude, но съедает её быстрее всего',
+  'code:Cursor':'$20 — на бесплатном хватает дня на два',
+  'art:Nano Banana Pro':'~$15 через агрегатор при 200–300 картинках',
+  'art:Midjourney':'$10 минимум, реально $30 за комфортный объём',
+  'sound:ElevenLabs':'$5 хватает на 30 минут озвучки в месяц',
+  'video:Kling':'~$10 за 60–80 клипов через агрегатор',
+  'video:Veo 3':'дороже всех: $0,5–1 за клип, бюджет уходит незаметно',
+  'avatar:HeyGen':'$24 — бесплатный тариф с водяным знаком не для дела',
+  'mp:Айдентика':'рублями, от 500 ₽ за пакет искр',
+  'text:ChatGPT':'$20 или бесплатно, если хватает средней модели',
+  'research:Perplexity':'бесплатного тарифа хватает почти всегда'
+};
+
 /* ---------- 2. Утилиты ---------- */
 const $  = (s,r) => (r||document).querySelector(s);
 const $$ = (s,r) => Array.from((r||document).querySelectorAll(s));
@@ -121,7 +162,9 @@ const SECTIONS = [
    lead:'Что получается на выходе — с задачей, стеком и граблями. Всё сделано для этого выпуска.', band:''},
   {id:'pay',     n:'07', title:'Практикум: оплата',    folio:'3 пути', fam:'word',
    lead:'Почему карта не проходит и что реально работает из России.', band:''},
-  {id:'chron',   n:'08', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
+  {id:'fails',   n:'08', title:'Что сломалось',        folio:'6 разборов', fam:'motion',
+   lead:'Обещания, которые не сбылись, и мои собственные промахи. С выводом, что делать вместо.', band:''},
+  {id:'chron',   n:'09', title:'Хроника выпусков',     folio:'что менялось', fam:'image',
    lead:'Что убрал, что добавил и где ошибся — с датами.', band:''}
 ];
 
@@ -179,12 +222,60 @@ const SHOWCASE = [
    time:'8 минут на макет'}
 ];
 
-const VIEWS = ['home','index','claude','models','craft','recipes','showcase','saved','pay','chron'];
+/* ── Что сломалось: честные разборы неудач ──────────────────
+   Раздел, которого нет ни у кого. Обещания, которые не сбылись,
+   и мои собственные промахи — с выводом, что делать вместо. */
+const FAILS = [
+  {id:'f-sora', tag:'[СЕРВИС ЗАКРЫЛСЯ]', date:'июль 2026', fam:'motion',
+   title:'Sora: год ожидания и выключенный рубильник',
+   what:'Модель, которую ждали как перелом в видео. Я держал её в каталоге как флагман по длинным сценам.',
+   went:'Приложение отключили, API догорает до сентября. Люди, встроившие Sora в рабочий процесс, остались с нерабочими сценариями и оплаченными планами.',
+   lesson:'Не строй процесс на одном сервисе, каким бы громким он ни был. Держи запасной вариант <b>до того</b>, как он понадобится.',
+   now:'По видео беру Veo 3, Kling и Seedance. Три разных, а не один любимый.'},
+
+  {id:'f-mine-claude', tag:'[МОЯ ОШИБКА]', date:'27 июля 2026', fam:'word',
+   title:'Я написал, что Claude не умеет картинки',
+   what:'В прошлом выпуске стояла строка: «не универсал, для картинок и видео нужны другие модели».',
+   went:'Это оказалось неточно, и читатель указал мне на это прямо. Через коннектор Higgsfield Claude управляет тремя десятками генеративных моделей прямо из чата — и делает это неплохо.',
+   lesson:'Проверять не только «что модель умеет из коробки», но и <b>что она умеет через коннекторы</b>. Граница между «не может» и «может через разъём» стирается быстрее, чем обновляются обзоры.',
+   now:'Появился отдельный уровень «Студия» — пять глав про подключение, выбор модели и экономику кредитов.'},
+
+  {id:'f-free', tag:'[ОБЕЩАНИЕ]', date:'весь год', fam:'trade',
+   title:'«Бесплатно» — которое кончается на третьей картинке',
+   what:'Сервисы пишут «попробуйте бесплатно» крупно, а лимит — мелко или нигде.',
+   went:'Регистрируешься, тратишь двадцать минут на настройку, делаешь три генерации и упираешься в стену. Nano Banana Pro — три картинки в день. HeyGen — три видео в месяц с водяным знаком.',
+   lesson:'Смотреть не на слово «бесплатно», а на <b>число в день или месяц</b>. Если числа нигде нет — считай, что тарифа нет.',
+   now:'В указателе у каждой находки стоит реальный лимит. Это единственная причина, по которой я вообще завёл это поле.'},
+
+  {id:'f-mine-vpn', tag:'[МОЯ ОШИБКА]', date:'весна 2026', fam:'machine',
+   title:'Совет, который мог стоить читателю аккаунта',
+   what:'Я рекомендовал зарубежные сервисы, не написав главного про доступ из России.',
+   went:'Опасность не в самом обходе, а в <b>несоответствии данных</b>: регион в профиле один, карта другой страны, часовой пояс московский. Такой набор ловится и приводит к блокировке — вместе с оплаченной подпиской и историей.',
+   lesson:'Если пишешь про доступ — пиши про риск целиком, а не половину. Недосказанность в таких темах дороже молчания.',
+   now:'В разборе Claude отдельная глава про доступ и оплату, с прямым предупреждением.'},
+
+  {id:'f-hype', tag:'[ХАЙП]', date:'2026', fam:'image',
+   title:'Модели, которые обгоняют всех — ровно неделю',
+   what:'Каждый месяц выходит генератор, который «уничтожил Midjourney». Заголовки, треды, сравнительные таблицы.',
+   went:'Через две недели выясняется: тесты подобраны, лимиты жёсткие, кириллицы нет, а на реальной задаче результат хуже привычного. Я сам добавлял такие в каталог и потом убирал.',
+   lesson:'Не вносить сервис, пока не закрыл им <b>настоящую задачу</b>. Не демо, не тест из обзора — свою работу.',
+   now:'Правило издания: сначала работа, потом список. Из-за него каталог растёт медленно и это правильно.'},
+
+  {id:'f-agents', tag:'[ЗАВЫШЕННОЕ ОЖИДАНИЕ]', date:'2026', fam:'machine',
+   title:'Агенты, которым нельзя доверить и получаса',
+   what:'Обещание года: ставишь задачу как коллеге и уходишь пить кофе.',
+   went:'На практике агент уверенно делает не то. Разворачивает лишнее, тратит бюджет, а на длинной цепочке шагов теряет исходную цель. Час работы агента может сжечь недельный лимит.',
+   lesson:'Агент — не сотрудник, а <b>стажёр без страха</b>. Дроби задачу, ставь запреты явно, проверяй каждый шаг.',
+   now:'В разборах агентов запреты вынесены в отдельный пункт промпта: не покупать, не отправлять, не публиковать.'}
+];
+
+const VIEWS = ['home','index','claude','models','craft','recipes','showcase','fails','saved','pay','chron'];
 
 /* ---------- 4. Состояние ---------- */
 let active = 'all';
 let activeFam = null;
 let onlyNoVpn = false;
+let onlyDaily = false;
 let sortMode = 'default';
 let viewMode = 'list';
 let query = '';
@@ -474,8 +565,11 @@ function detailHTML(t, uid){
     (m.tasks && m.tasks.length ?
       '<p class="dl">Подходит для задач</p><ul class="tasks">'+
       m.tasks.map(x => '<li>'+esc(x)+'</li>').join('')+'</ul>' : '')+
+    '<p class="dl">Мой статус</p>'+
+    '<p class="dtext"><span class="use-badge use-'+useOf(t)+'">'+USE[useOf(t)].label+'</span></p>'+
     '<p class="dl">Как получить доступ</p>'+
     '<p class="dtext"><b>'+esc(t.access)+'.</b> '+(ACCESS_HINT[t.access]||'')+'</p>'+
+    (COST[k] ? '<p class="dl">Сколько уходит у меня</p><p class="dtext cost">'+esc(COST[k])+'</p>' : '')+
     (FREE_LIMITS[k] ? '<div class="limit">'+ICO.info+'<span>'+FREE_LIMITS[k]+'</span></div>' : '')+
     '<span class="detail-acts">'+
       (u ? '<a class="go" href="https://'+u+'" target="_blank" rel="noopener noreferrer">Открыть сайт '+ICO.arrow+'</a>' : '')+
@@ -491,7 +585,9 @@ function idxRow(t, i){
   return '<li class="idx-item" data-fam="'+famOf(t.cat)+'">'+
     '<button class="idx-btn" type="button" data-open="'+esc(k)+'" aria-expanded="false" aria-controls="'+uid+'">'+
       '<span class="mark">'+String(i+1).padStart(2,'0')+'</span>'+
-      '<span><span class="idx-name">'+esc(t.name)+'</span><p class="idx-note">'+t.note+'</p></span>'+
+      '<span><span class="idx-name">'+esc(t.name)+
+        (useOf(t)==='daily'?'<i class="use-mark" title="В работе каждый день">●</i>':'')+
+        '</span><p class="idx-note">'+t.note+'</p></span>'+
       '<span class="idx-side"><i class="acc-dot '+ACC_CLASS(t.access)+'"></i>'+ACC_SHORT(t.access)+'</span>'+
     '</button>'+ detailHTML(t, uid) +'</li>';
 }
@@ -516,6 +612,7 @@ function renderIndex(){
   if(activeFam && active === 'all' && !q) list = list.filter(t => famOf(t.cat) === activeFam);
   list = list.filter(t => matches(t,q));
   if(onlyNoVpn) list = list.filter(noVpnOk);
+  if(onlyDaily) list = list.filter(t => useOf(t)==='daily' || useOf(t)==='often');
 
   if(sortMode === 'free')  list = list.slice().sort((a,b) => (isFree(b)?1:0)-(isFree(a)?1:0));
   if(sortMode === 'vpn')   list = list.slice().sort((a,b) => (noVpnOk(b)?1:0)-(noVpnOk(a)?1:0));
@@ -879,6 +976,28 @@ function renderShowcase(){
   observe(box);
 }
 
+/* ── Что сломалось ── */
+function renderFails(){
+  const box = $('#failsList');
+  if(!box) return;
+  box.innerHTML = FAILS.map((f,i) =>
+    '<article class="fail rise" data-fam="'+f.fam+'">'+
+      '<div class="fail-side">'+
+        '<span class="fail-n">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="fail-tag">'+esc(f.tag)+'</span>'+
+        '<span class="fail-date">'+esc(f.date)+'</span>'+
+      '</div>'+
+      '<div class="fail-body">'+
+        '<h3>'+esc(f.title)+'</h3>'+
+        '<p class="fl">Что было</p><p class="fail-txt">'+esc(f.what)+'</p>'+
+        '<p class="fl">Что пошло не так</p><p class="fail-txt">'+esc(f.went)+'</p>'+
+        '<div class="fail-lesson"><span class="fl">Вывод</span><p>'+f.lesson+'</p></div>'+
+        '<p class="fail-now"><span class="fl">Как теперь</span>'+esc(f.now)+'</p>'+
+      '</div>'+
+    '</article>').join('');
+  observe(box);
+}
+
 /* ---------- 17. Хроника ---------- */
 function renderChron(){
   const box = $('#chronBody');
@@ -952,6 +1071,7 @@ function showView(name, push){
   if(name === 'models'){ if($('#modelArticle').hidden) renderModels(); }
   if(name === 'chron')   renderChron();
   if(name === 'showcase') renderShowcase();
+  if(name === 'fails')   renderFails();
 
   if(push !== false){
     const h = name === 'home' ? ' ' : '#/'+name;
@@ -1083,6 +1203,7 @@ clearEl.addEventListener('click', () => {
   searchEl.focus(); renderIndex();
 });
 $('#vpnToggle').addEventListener('change', e => { onlyNoVpn = e.target.checked; renderIndex(); });
+$('#dailyToggle').addEventListener('change', e => { onlyDaily = e.target.checked; renderIndex(); });
 $('#sortSeg').addEventListener('click', e => {
   const b = e.target.closest('button[data-sort]'); if(!b) return;
   sortMode = b.dataset.sort;
